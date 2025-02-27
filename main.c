@@ -1,37 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 
 // Struct containing results from CLI arg parsing
-#define LENGTHOF_ARG_RES 1 // Number of members in ArgResults
 struct ArgResults {
     _Bool help;
 };
 
 
-void parse_args(int argc, char *argv[], struct ArgResults *arg_res, char **main_path) {
-    int i;
+void parse_args(int argc, char *argv[], struct ArgResults *arg_res) {
+    int c;
 
-    for (i=1; i<argc; i++) {
-        // TODO make it more robust
-        if (strncmp("-h", argv[i], 2) == 0) {
-            arg_res -> help = true;
-            return; // Help flag exits early, so no need to continue
-        }
+    opterr = 0;
 
-        // If it is none of the builtin flags, treat the arg as the path
-        else {
-            *main_path = argv[i];
+    while ((c = getopt(argc, argv, "h")) != -1) {
+        switch (c) {
+            case '?':
+                printf("Error: Invalid option '%c'\n", optopt);
+                exit(1);
+
+            case 'h':
+                arg_res -> help = true;
+                break;
         }
+    }
+
+    // Once all options are parsed, the only remaining argument should be the
+    // file to interpret, i.e. at most 1 argument (may be 0, e.g. if -h is passed)
+    if (argc - optind > 1) {
+        printf("Error: Must give only one path\nUse option -h for help\n");
+        exit(1);
     }
 }
 
 
 
-void help() {
-    printf("TODO HELP");
+// FIXME: PLACEHOLDER NAME
+void help(char *program_name) {
+    printf("Interpreter for FIXME PLACEHOLDER, a very basic custom programming language.\n\n"
+           "Usage: %s <options> <path to source file>\n\n"
+           "Options:\n"
+           "-h: Show this help text.\n"
+           , program_name);
 
     exit(0);
 }
@@ -39,27 +51,18 @@ void help() {
 
 
 int main(int argc, char *argv[]) {
-    char *main_path = NULL;
-
-    struct ArgResults arg_res;
+    struct ArgResults arg_res = {false};
     arg_res.help = false;
 
-    parse_args(argc, argv, &arg_res, &main_path);
+    parse_args(argc, argv, &arg_res);
 
     if (arg_res.help)
-        help();
+        help(argv[0]);
 
-    if (main_path == NULL) {
-        printf("Error parsing path\n");
+    if (optind == argc) {
+        printf("Error: No path given\n");
         exit(1);
     }
-
-    printf("%s\n", main_path);
-
-    // Parse args
-        // File to interpret
-        // Options
-            // -h: help info, program info
 
     // Scan file
         // Construct AST
