@@ -13,10 +13,11 @@ EXIT_TOO_MANY_PATHS=4
 
 # Call as: assert <case> <expected result>
 assert () {
-    if [[ $2 != $? ]]; then
+    res=$?
+    if [[ $2 != $res ]]; then
         echo "Assertion failed: Case $1"
         echo "Expected result: $2"
-        echo "Actual result: $?"
+        echo "Actual result: $res"
         exit 1
     fi
 }
@@ -29,10 +30,13 @@ make > /dev/null 2>&1
 # |     ARG PARSING     |
 # |                     |
 # -----------------------
-
-# No path or arguments
+# No path or flags
 ./main > /dev/null 2>&1
 assert "./main" $EXIT_NO_PATH
+
+# Quiet flag with no path
+./main -q 2> /dev/null
+assert "./main -q" $EXIT_NO_PATH
 
 # Only help flag
 ./main -h > /dev/null 2>&1
@@ -45,6 +49,10 @@ assert "./main -j" $EXIT_INVALID_OPTION
 # Help flag with invalid flag
 ./main -hj > /dev/null 2>&1
 assert "./main -hj" $EXIT_INVALID_OPTION
+
+# Quiet flag with invalid flag
+./main -qj 2> /dev/null
+assert "./main -qj" $EXIT_INVALID_OPTION
 
 
 
