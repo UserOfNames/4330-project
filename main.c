@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <unistd.h>
+#include <unistd.h> // For getopt
+
+// EXIT_SUCCESS and generic EXIT_FAILURE are already defined in stdlib
+#define EXIT_INVALID_OPTION 2
+#define EXIT_NO_PATH 3
+#define EXIT_TOO_MANY_PATHS 4
 
 
 // Struct containing results from CLI arg parsing
@@ -19,19 +24,12 @@ void parse_args(int argc, char *argv[], struct ArgResults *arg_res) {
         switch (c) {
             case '?':
                 printf("Error: Invalid option '%c'\n", optopt);
-                exit(1);
+                exit(EXIT_INVALID_OPTION);
 
             case 'h':
                 arg_res -> help = true;
                 break;
         }
-    }
-
-    // Once all options are parsed, the only remaining argument should be the
-    // file to interpret, i.e. at most 1 argument (may be 0, e.g. if -h is passed)
-    if (argc - optind > 1) {
-        printf("Error: Must give only one path\nUse option -h for help\n");
-        exit(1);
     }
 }
 
@@ -45,14 +43,13 @@ void help(char *program_name) {
            "-h: Show this help text.\n"
            , program_name);
 
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 
 
 
 int main(int argc, char *argv[]) {
     struct ArgResults arg_res = {false};
-    arg_res.help = false;
 
     parse_args(argc, argv, &arg_res);
 
@@ -61,7 +58,13 @@ int main(int argc, char *argv[]) {
 
     if (optind == argc) {
         printf("Error: No path given\n");
-        exit(1);
+        exit(EXIT_NO_PATH);
+    }
+    // Once all options are parsed, the only remaining argument should be the
+    // file to interpret, i.e. at most 1 argument (may be 0, e.g. if -h is passed)
+    else if (argc - optind > 1) {
+        printf("Error: Must give only one path\nUse option -h for help\n");
+        exit(EXIT_TOO_MANY_PATHS);
     }
 
     // Scan file
@@ -69,5 +72,5 @@ int main(int argc, char *argv[]) {
 
     // Walk AST
 
-    return 0;
+    return EXIT_SUCCESS;
 }
