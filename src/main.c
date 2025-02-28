@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include <unistd.h> // For getopt
 
+#include "interpret.h"
+
 // EXIT_SUCCESS and generic EXIT_FAILURE are already defined in stdlib
 #define EXIT_INVALID_OPTION 2
 #define EXIT_NO_PATH 3
@@ -91,10 +93,7 @@ int main(int argc, char *argv[]) {
     }
 
 
-    // Scan file
-        // Construct AST
-
-    // Walk AST
+    printf("%d\n", interpret(argv[optind]));
 
 
     // TODO: Move this to the appropriate location

@@ -22,6 +22,8 @@ assert () {
     fi
 }
 
+alias main="bin/main"
+
 make > /dev/null 2>&1
 
 
@@ -31,27 +33,27 @@ make > /dev/null 2>&1
 # |                     |
 # -----------------------
 # No path or flags
-./main > /dev/null 2>&1
+main > /dev/null 2>&1
 assert "./main" $EXIT_NO_PATH
 
 # Quiet flag with no path
-./main -q 2> /dev/null
+main -q 2> /dev/null
 assert "./main -q" $EXIT_NO_PATH
 
 # Only help flag
-./main -h > /dev/null 2>&1
+main -h > /dev/null 2>&1
 assert "./main -h" $EXIT_SUCCESS
 
 # Invalid flag
-./main -j > /dev/null 2>&1
+main -j > /dev/null 2>&1
 assert "./main -j" $EXIT_INVALID_OPTION
 
 # Help flag with invalid flag
-./main -hj > /dev/null 2>&1
+main -hj > /dev/null 2>&1
 assert "./main -hj" $EXIT_INVALID_OPTION
 
 # Quiet flag with invalid flag
-./main -qj 2> /dev/null
+main -qj 2> /dev/null
 assert "./main -qj" $EXIT_INVALID_OPTION
 
 
