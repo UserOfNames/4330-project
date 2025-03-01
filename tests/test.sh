@@ -10,6 +10,7 @@ EXIT_FAILURE=1
 EXIT_INVALID_OPTION=2
 EXIT_NO_PATH=3
 EXIT_TOO_MANY_PATHS=4
+EXIT_INVALID_PATH=5
 
 # Call as: assert <case> <expected result>
 assert () {
@@ -56,6 +57,21 @@ assert "./main -hj" $EXIT_INVALID_OPTION
 main -qj 2> /dev/null
 assert "./main -qj" $EXIT_INVALID_OPTION
 
+
+# ------------------------
+# |                      |
+# |     OPENING FILE     |
+# |                      |
+# ------------------------
+# Invalid file
+main THERESNOWAYYOUMADEAFILENAMEDTHIS1234 > /dev/null 2>&1
+assert "./main THERESNOWAYYOUMADEAFILENAMEDTHIS1234" $EXIT_INVALID_PATH
+
+# Valid file, empty
+touch IJUSTMADEAFILENAMEDTHISHOPEFULLYYOUDIDNT1234
+main IJUSTMADEAFILENAMEDTHISHOPEFULLYYOUDIDNT1234 > /dev/null 2>&1
+assert "./main IJUSTMADEAFILENAMEDTHISHOPEFULLYYOUDIDNT1234" $EXIT_SUCCESS
+rm IJUSTMADEAFILENAMEDTHISHOPEFULLYYOUDIDNT1234
 
 
 echo "All tests passing."
