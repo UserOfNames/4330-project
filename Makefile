@@ -1,3 +1,5 @@
+$(shell mkdir -p bin obj)
+
 main: src/main.c interpret.o
 	gcc src/main.c obj/interpret.o -Wall -Wextra -Wpedantic -o bin/main
 
