@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
         exit(EXIT_NO_PATH);
     }
     // Once all options are parsed, the only remaining argument should be the
-    // file to interpret, i.e. at most 1 argument (may be 0, e.g. if -h is passed)
+    // file to interpret, i.e. at most 1 argument
     else if (argc - optind > 1) {
         fprintf(stderr, "Error: Must give only one path\nUse option -h for help\n");
         exit(EXIT_TOO_MANY_PATHS);
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
     }
 
 
-    printf("%d\n", interpret(argv[optind]));
+    interpret(argv[optind]);
 
 
     // TODO: Move this to the appropriate location
