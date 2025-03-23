@@ -1,7 +1,6 @@
 # Large parts of this were derived from https://makefiletutorial.com/#makefile-cookbook
 # ...which in turn credits https://spin.atomicobject.com/makefile-c-projects/
 
-
 CC = gcc
 LDFLAGS = -Wall -Wextra -Wpedantic
 

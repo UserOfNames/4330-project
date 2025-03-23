@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <unistd.h> // For getopt
 
-#include "interpret.h"
+#include "interpret_file.h"
 
 // EXIT_SUCCESS and generic EXIT_FAILURE are already defined in stdlib
 #define EXIT_INVALID_OPTION 2
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
     }
 
 
-    interpret(argv[optind]);
+    interpret_file(argv[optind]);
 
 
     // TODO: Move this to the appropriate location
