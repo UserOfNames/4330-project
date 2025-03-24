@@ -23,6 +23,8 @@ void parse_args(int argc, char *argv[], struct ArgResults *arg_res) {
 
     opterr = 0;
 
+    // Using GNU getopt extension that permutes argv
+    // Not POSIX compliant
     while ((c = getopt(argc, argv, "hq")) != -1) {
         switch (c) {
             case '?':
