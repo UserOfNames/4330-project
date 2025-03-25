@@ -1,6 +1,10 @@
 #ifndef INTERPRET_H
 #define INTERPRET_H
 
+// Maximum line length allowed by the interpreter
+#define MAX_LINE_LENGTH 500
+
+
 // Enum representing the type of a given token
 typedef enum {
     // Default type of token
@@ -26,6 +30,15 @@ typedef struct {
     long capacity;
     long used;
 } TokenList;
+
+
+// scan_line() can return a number of errors, some of which must be handled differently
+typedef enum {
+    SCAN_LINE_SUCCESS = 0,
+    SCAN_LINE_FAILURE = 1, // Do not execute, but continue scanning
+    SCAN_LINE_ABORT   = 2, // Stop scanning immediately
+} ScanLineResult;
+
 
 TokenList make_token_list();
 

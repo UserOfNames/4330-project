@@ -48,7 +48,6 @@ int add_token(TokenList *list, Token token) {
 }
 
 int scan_line(char *line, int line_number, TokenList *list) {
-    int result = 0; // Return value; set by errors
     char *current = line;
     Token token;
     TokenType type;
@@ -90,12 +89,11 @@ int scan_line(char *line, int line_number, TokenList *list) {
                 break;
 
             // If the character does not match any token, it is invalid
-            // Continue scanning to catch as many invalid tokens as possible
-            // rather than exiting immediately
+            // Stop scanning the line, but continue scanning the file
+            // to catch other errors
             default:
                 fprintf(stderr, "Error: Invalid token '%c' on line %d\n", *current, line_number);
-                result = 1;
-                break;
+                return SCAN_LINE_FAILURE;
         }
 
         current++;
@@ -107,9 +105,17 @@ int scan_line(char *line, int line_number, TokenList *list) {
             fprintf(stderr, "Error scanning line %d:\n"
                     "Could not add token '%c' to token list\n"
                     "This is not your fault, it's mine. Oops.\n", line_number, *current);
-            return 1;
+            return SCAN_LINE_ABORT;
         }
     }
 
-    return result;
+    // fgets() always null-terminates the read buffer, so strlen() is safe here
+    // If the last non-null character read is not a newline, the read line was
+    // too long
+    if (current[-1] != '\n') {
+        fprintf(stderr, "Error: Line %d exceeds %d characters.\n", line_number, MAX_LINE_LENGTH);
+        return SCAN_LINE_ABORT;
+    }
+
+    return SCAN_LINE_SUCCESS;
 }

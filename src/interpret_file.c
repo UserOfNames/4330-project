@@ -8,10 +8,6 @@
 
 #define EXIT_INVALID_PATH 5
 
-// If the interpreter reads a line more than 500 characters long, it will
-// simply abort execution instead of trying to manage the partial read.
-#define MAX_LINE_LENGTH 500
-
 
 int interpret_file(char *path_str) {
     // One extra byte for null-terminator, one for trailing newline
@@ -24,10 +20,14 @@ int interpret_file(char *path_str) {
         exit(EXIT_INVALID_PATH);
     }
 
+
     // Iterate over the file line-by-line, passing each line to the scanner
-    int line_number = 1;
+    int line_number = 0;
     TokenList token_list = make_token_list();
-    while (fgets(line, MAX_LINE_LENGTH + 2, path) != NULL) {
+    _Bool break_loop = false;
+    while (fgets(line, MAX_LINE_LENGTH + 2, path) != NULL && !break_loop) {
+        line_number++;
+
         // Ensure the line does not exceed the limit
         // fgets() null terminates the buffer, so plain strlen() is safe here
         if (line[strlen(line) - 1] != '\n') {
@@ -36,11 +36,19 @@ int interpret_file(char *path_str) {
             break;
         }
 
-        if (scan_line(line, line_number, &token_list) == 1) {
-            result = 1;
-        }
+        switch (scan_line(line, line_number, &token_list)) {
+            SCAN_LINE_SUCCESS:
+                break;
 
-        line_number++;
+            SCAN_LINE_FAILURE:
+                result = 1;
+                break;
+
+            SCAN_LINE_ABORT:
+                result = 1;
+                break_loop = true;
+                break;
+        }
     }
 
     // Nullifying these pointers isn't strictly necessary, but it's a good habit
