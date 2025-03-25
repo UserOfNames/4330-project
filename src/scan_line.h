@@ -42,8 +42,6 @@ typedef enum {
 
 TokenList make_token_list();
 
-int add_token(TokenList *list, Token token);
-
 int scan_line(char *line, int line_number, TokenList *list);
 
 #endif

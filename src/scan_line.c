@@ -35,7 +35,7 @@ int add_token(TokenList *list, Token token) {
         temp = (Token*)realloc(list -> tokens, list -> capacity * sizeof(Token));
 
         if (temp == NULL) {
-            return 1;
+            return EXIT_FAILURE;
         }
 
         list -> tokens = temp;
@@ -44,13 +44,12 @@ int add_token(TokenList *list, Token token) {
     list -> tokens[list -> used] = token;
     list -> used++;
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 int scan_line(char *line, int line_number, TokenList *list) {
     char *current = line;
     Token token;
-    TokenType type;
 
     while (*current != 0) {
         // Each loop, we reset the token to a default state,

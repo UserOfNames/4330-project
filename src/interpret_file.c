@@ -6,8 +6,6 @@
 #include "interpret_file.h"
 #include "scan_line.h"
 
-#define EXIT_INVALID_PATH 5
-
 
 int interpret_file(char *path_str) {
     // One extra byte for null-terminator, one for trailing newline
@@ -17,7 +15,7 @@ int interpret_file(char *path_str) {
     FILE *path = fopen(path_str, "r");
     if (path == NULL) {
         fprintf(stderr, "Error: Could not open path %s\n", path_str);
-        exit(EXIT_INVALID_PATH);
+        return EXIT_FAILURE;
     }
 
 
