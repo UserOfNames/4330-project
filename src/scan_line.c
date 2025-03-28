@@ -1,68 +1,49 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
 #include "scan_line.h"
+#include "constants.h"
+#include "tokenlib.h"
 
 
-// Create and return new token list
-// Since a new list should always start with the same initial values,
-// a constructor functions makes sense here
-TokenList make_token_list() {
-    TokenList list = {
-        .tokens = NULL,
-        .capacity = 0,
-        .used = 0,
-    };
+_Bool resolve(char expected, char *next) {
+    if (*next == 0)
+        return false;
 
-    return list;
+    return *next == expected;
 }
 
-// Add a new token to the list
-int add_token(TokenList *list, Token token) {
-    long capacity = list -> capacity;
-    long used     = list -> used;
-    Token *temp;
-
-    // If the list is full...
-    if (capacity >= used) {
-        // If the list is empty, set the capacity to default (16)
-        // Otherwise, double the capacity
-        list -> capacity = (capacity == 0) ? 16 : capacity * 2;
-
-        // If realloc() fails, the original block is not freed
-        // To prevent memory leaks, we must first verify its success
-        // before reassigning the original pointer
-        temp = (Token*)realloc(list -> tokens, list -> capacity * sizeof(Token));
-
-        if (temp == NULL) {
-            return EXIT_FAILURE;
-        }
-
-        list -> tokens = temp;
-    }
-
-    list -> tokens[list -> used] = token;
-    list -> used++;
-
-    return EXIT_SUCCESS;
-}
 
 int scan_line(char *line, int line_number, TokenList *list) {
     char *current = line;
     Token token;
 
     while (*current != 0) {
-        // Each loop, we reset the token to a default state,
+        // Each loop, we reset the token to a default state, then mutate it to
         // its correct state before adding it to the list
-        token.type = DISCARD;
+        // This is an optimization over using make_token()
+        token.type   = DISCARD;
+        token.lexeme = NULL;
 
         switch (*current) {
+            case ' ':
+                break;
+
+            case '\t':
+                break;
+
             case '(':
                 token.type = LPAREN;
                 break;
 
             case ')':
                 token.type = RPAREN;
+                break;
+
+            case '.':
+                token.type = DOT;
                 break;
 
             case '+':
@@ -77,10 +58,29 @@ int scan_line(char *line, int line_number, TokenList *list) {
                 token.type = STAR;
                 break;
 
-            case ' ':
+            case '!':
+                token.type = resolve('=', ++current) ? NOT_EQ : BANG;
                 break;
 
-            case '\t':
+            case '=':
+                token.type = resolve('=', ++current) ? EQ_EQ : EQ;
+                break;
+
+            case '>':
+                token.type = resolve('=', ++current) ? GT_EQ : GT;
+                break;
+
+            case '<':
+                token.type = resolve('=', ++current) ? LT_EQ : LT;
+                break;
+
+            case '/':
+                token.type = SLASH;
+                break;
+
+            case '#':
+                while (current[1] != '\n' && current[1] != 0)
+                    current ++;
                 break;
 
             case '\n':

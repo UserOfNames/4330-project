@@ -5,6 +5,7 @@
 
 #include "interpret_file.h"
 #include "scan_line.h"
+#include "constants.h"
 
 
 int interpret_file(char *path_str) {
