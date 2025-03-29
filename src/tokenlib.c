@@ -13,6 +13,15 @@ Token make_token(TokenType type) {
 }
 
 
+// Generate a new token with a lexeme
+Token make_token_lexeme(TokenType type, char *lexeme) {
+    Token token = make_token(type);
+    token.lexeme = lexeme;
+
+    return token;
+}
+
+
 // Create and return new token list
 // Since a new list should always start with the same initial values,
 // a constructor functions makes sense here
@@ -28,8 +37,22 @@ TokenList make_token_list() {
 
 
 void reset_token_list(TokenList * list) {
-    if (list -> tokens != NULL)
-        free(list -> tokens);
+    long i;
+    char *current_lexeme;
+    Token *tokens = list -> tokens;
+
+    if (tokens != NULL) {
+        for (i=0; i<list->used; i++) {
+            current_lexeme = (list -> tokens)[i].lexeme;
+            if (current_lexeme != NULL) {
+                free(current_lexeme);
+                current_lexeme = NULL;
+            }
+        }
+
+        free(tokens);
+    }
+
 
     list -> tokens = NULL;
     list -> capacity = list -> used = 0;

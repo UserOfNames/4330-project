@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -8,6 +9,8 @@
 #include "tokenlib.h"
 
 
+// Check if the next character matches an expected character
+// Used for two-character tokens
 _Bool resolve(char expected, char *next) {
     if (*next == 0)
         return false;
@@ -16,9 +19,36 @@ _Bool resolve(char expected, char *next) {
 }
 
 
+// Left pointer and right pointer to some part of a string, get a
+// substring consisting of all characters from l to r
+// Lower inclusive, upper exclusive, like a slice
+// It is the responsibility of the caller to ensure l and r are valid pointers
+char* get_substring(char *l, char *r) {
+    size_t length = r - l;
+
+    if (l > r || l == NULL || r == NULL)
+        return NULL;
+
+    char *result = malloc(length + 1); // +1 for null
+    if (result == NULL) {
+        fprintf(stderr, "Error in get_substring(): Could not allocate result buffer\n");
+        return NULL;
+    }
+
+    strncpy(result, l, length);
+    result[length] = 0;
+
+    return result;
+}
+
+
 int scan_line(char *line, int line_number, TokenList *list) {
     char *current = line;
     Token token;
+
+    // Some tokens take several characters. This is used when you need to point
+    // to the start of a long token, e.g. string literals
+    char *start = line;
 
     while (*current != 0) {
         // Each loop, we reset the token to a default state, then mutate it to
@@ -80,7 +110,21 @@ int scan_line(char *line, int line_number, TokenList *list) {
 
             case '#':
                 while (current[1] != '\n' && current[1] != 0)
-                    current ++;
+                    current++;
+                break;
+
+            case '"':
+                start = current++;
+                while (*current != '"') {
+                    if (*current == '\n' || *current == 0) {
+                        fprintf(stderr, "Error: Unterminated string on line %d\n", line_number);
+                        return SCAN_LINE_FAILURE;
+                    }
+                    current++;
+                }
+
+                token.type   = STRING;
+                token.lexeme = get_substring(start+1, current);
                 break;
 
             case '\n':

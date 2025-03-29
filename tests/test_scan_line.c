@@ -47,6 +47,47 @@ _Bool match_tl(TokenList *list, Token *expected, int expected_length) {
     return true;
 }
 
+
+int test_get_substring() {
+    char *one    = "";
+    char *two    = "hello world";
+    char *result;
+
+    // Empty string
+    result = get_substring(one, one);
+    assert(result != NULL);
+    assert(strcmp(result, "\0") == 0);
+
+    // Simple string
+    result = get_substring(two, two+5);
+    assert(result != NULL);
+    assert(strcmp(result, "hello\0") == 0);
+
+    // l pointer greater (invalid case)
+    result = get_substring(two+5, two-5);
+    assert(result == NULL);
+
+    // l == r in the middle of a string
+    result = get_substring(two+3, two+3);
+    assert(result != NULL);
+    assert(strcmp(result, "\0") == 0);
+
+    // NULL l
+    result = get_substring(NULL, "");
+    assert (result == NULL);
+
+    // NULL r
+    result = get_substring("", NULL);
+    assert (result == NULL);
+
+    // NULL l and r
+    result = get_substring(NULL, NULL);
+    assert (result == NULL);
+
+    return EXIT_SUCCESS;
+}
+
+
 int test_scan_line() { 
     // Empty line
     TokenList list = make_token_list();
@@ -141,6 +182,40 @@ int test_scan_line() {
     assert(result == EXIT_SUCCESS);
     assert(match_tl(&list, expected5, sizeof(expected5) / sizeof(expected5[0])));
 
+
+    // String
+    reset_token_list(&list);
+    Token expected6[] = {
+        make_token_lexeme(STRING, "hello"),
+        make_token_lexeme(STRING, "world"),
+    };
+
+    result = scan_line("\"hello\" \"world\"\n", 1, &list);
+    assert(result == EXIT_SUCCESS);
+    assert(match_tl(&list, expected6, sizeof(expected6) / sizeof(expected6[0])));
+
+
+    // String + comment + simple tokens + complex tokens + invalid token
+    reset_token_list(&list);
+    Token expected7 [] = {
+        make_token(RPAREN),
+        make_token(NOT_EQ),
+        make_token(BANG),
+        make_token(EQ),
+        make_token(STAR),
+        make_token(NOT_EQ),
+        make_token(GT),
+        make_token(EQ),
+        make_token(GT_EQ),
+        make_token_lexeme(STRING, "this is a string"),
+        make_token(DOT),
+        make_token(PLUS),
+        make_token(LT),
+    };
+
+    result = scan_line(")!= \t ! = * != # this is a comment\n > = >= \"this is a string\" . + < A = <=\n", 1, &list);
+    assert(result == EXIT_FAILURE);
+    assert(match_tl(&list, expected7, sizeof(expected7) / sizeof(expected7[0])));
 
     reset_token_list(&list);
     return EXIT_SUCCESS;

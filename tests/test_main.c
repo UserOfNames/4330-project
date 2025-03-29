@@ -25,6 +25,12 @@ int main(int argc, char *argv[]) {
     test_make_token();
 
 
+    printf("\n------------------------\n"
+             "| make_token_lexeme(): |"
+           "\n------------------------\n");
+    test_make_token_lexeme();
+
+
     printf("\n----------------------\n"
              "| make_token_list(): |"
            "\n----------------------\n");
@@ -41,6 +47,12 @@ int main(int argc, char *argv[]) {
              "| reset_token_list(): |"
            "\n-----------------------\n");
     test_reset_token_list();
+
+
+    printf("\n--------------------\n"
+             "| get_substring(): |"
+           "\n--------------------\n");
+    test_get_substring();
 
 
     printf("\n----------------\n"

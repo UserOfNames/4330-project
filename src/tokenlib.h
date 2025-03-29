@@ -27,6 +27,8 @@ typedef enum {
 
     EQ, NOT_EQ, EQ_EQ,
     LT, GT, LT_EQ, GT_EQ,
+
+    STRING,
 } TokenType;
 
 
@@ -46,6 +48,7 @@ typedef struct {
 
 
 Token make_token(TokenType type);
+Token make_token_lexeme(TokenType type, char *lexeme);
 TokenList make_token_list();
 void reset_token_list(TokenList *list);
 int add_token(TokenList *list, Token token);

@@ -50,9 +50,7 @@ int interpret_file(char *path_str) {
         }
     }
 
-    // Nullifying these pointers isn't strictly necessary, but it's a good habit
-    free(token_list.tokens);
-    token_list.tokens = NULL;
+    reset_token_list(&token_list);
 
     fclose(path);
     path = NULL;
