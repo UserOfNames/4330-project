@@ -11,7 +11,7 @@
 int interpret_file(char *path_str) {
     // One extra byte for null-terminator, one for trailing newline
     char line[MAX_LINE_LENGTH + 2] = {0};
-    int result = 0;
+    int result = EXIT_SUCCESS;
 
     FILE *path = fopen(path_str, "r");
     if (path == NULL) {
@@ -31,7 +31,7 @@ int interpret_file(char *path_str) {
         // fgets() null terminates the buffer, so plain strlen() is safe here
         if (line[strlen(line) - 1] != '\n') {
             fprintf(stderr, "Error: Line %d exceeds %d characters.\n", line_number, MAX_LINE_LENGTH);
-            result = 1;
+            result = EXIT_FAILURE;
             break;
         }
 
@@ -40,11 +40,11 @@ int interpret_file(char *path_str) {
                 break;
 
             SCAN_LINE_FAILURE:
-                result = 1;
+                result = EXIT_FAILURE;
                 break;
 
             SCAN_LINE_ABORT:
-                result = 1;
+                result = EXIT_FAILURE;
                 break_loop = true;
                 break;
         }
