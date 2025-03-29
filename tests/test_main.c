@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     printf("\n------------------------\n"
              "| make_token_lexeme(): |"
            "\n------------------------\n");
-    test_make_token_lexeme();
+    test_make_token_with_lexeme();
 
 
     printf("\n----------------------\n"

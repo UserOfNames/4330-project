@@ -68,6 +68,11 @@ char* handle_string() {
 }
 
 
+double handle_number() {
+    ;
+}
+
+
 int scan_line(char *line, int line_num, TokenList *list) {
     line_number = line_num; // Set global line number
     current = line;
@@ -81,8 +86,8 @@ int scan_line(char *line, int line_num, TokenList *list) {
         // Each loop, we reset the token to a default state, then mutate it to
         // its correct state before adding it to the list
         // This is an optimization over using make_token()
-        token.type   = DISCARD;
-        token.lexeme = NULL;
+        token.type = DISCARD;
+        token.lexeme.Number = 0;
 
         switch (*current) {
             case ' ':
@@ -143,10 +148,10 @@ int scan_line(char *line, int line_num, TokenList *list) {
 
             // Handle strings
             case '"':
-                token.type   = STRING;
-                token.lexeme = handle_string();
+                token.type = STRING;
+                token.lexeme.String = handle_string();
 
-                if (token.lexeme == NULL) {
+                if (token.lexeme.String == NULL) {
                     fprintf(stderr, "Error parsing string on line %d\n", line_num);
                     return SCAN_LINE_ABORT;
                 }
@@ -158,11 +163,19 @@ int scan_line(char *line, int line_num, TokenList *list) {
                 // FIXME newline logic
                 break;
 
-            // If the character does not match any token, it is invalid
-            // Stop scanning the line, but continue scanning the file
-            // to catch other errors
+            // If the character does not match any other token:
+            // First check if it's a number and handle accordingly.
+            // Otherwise, the token is invalid. Stop scanning the line, but
+            // continue scanning the file to catch other errors
             default:
-                fprintf(stderr, "Error: Invalid token '%c' on line %d\n", *current, line_number);
+                start = current;
+                if (isdigit(*current)) {
+                    token.type = NUMBER;
+                    token.lexeme.Number = handle_number();
+                    break;
+                }
+
+                fprintf(stderr, "Error: Invalid token '%c' on line %d\n", *current, line_num);
                 return SCAN_LINE_FAILURE;
         }
         // End of switch statement

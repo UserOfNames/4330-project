@@ -7,24 +7,40 @@
 #include "test_scan_line.h"
 #include "../src/scan_line.h"
 
+// Boolean strcmp() with null pointer handling
+_Bool null_strcmp(char *l, char *r) {
+    if (l == NULL) {
+        if (r == NULL)
+            return true;
+        return false;
+    }
+
+    if (r == NULL)
+        return false;
+
+    if (!(strcmp(l, r) == 0))
+        return false;
+
+    return true;
+}
+
 // Verify that two tokens are equivalent
 _Bool match_token(Token l, Token r) {
     if (l.type != r.type)
         return false;
 
-    if (l.lexeme == NULL) {
-        if (r.lexeme == NULL)
+    // We already verified that the types are equivalent,
+    // so we only need to switch against one
+    switch (l.type) {
+        case STRING:
+            return null_strcmp(l.lexeme.String, r.lexeme.String);
+
+        case NUMBER:
+            return l.lexeme.Number != r.lexeme.Number;
+
+        default:
             return true;
-        return false;
     }
-
-    if (r.lexeme == NULL)
-        return false;
-
-    if (!(strcmp(l.lexeme, r.lexeme) == 0))
-        return false;
-
-    return true;
 }
 
 // Verify that a TokenList matches an expected output
@@ -185,8 +201,8 @@ int test_scan_line() {
     // Valid string
     reset_token_list(&list);
     Token expected6[] = {
-        make_token_lexeme(STRING, "hello"),
-        make_token_lexeme(STRING, "world"),
+        make_token_with_lexeme(STRING, (Lexeme){.String="hello"}),
+        make_token_with_lexeme(STRING, (Lexeme){.String="world"}),
     };
 
     result = scan_line("\"hello\" \"world\"\n", 1, &list);
@@ -197,7 +213,7 @@ int test_scan_line() {
     // Unterminated string
     reset_token_list(&list);
     Token expected7[] = {
-        make_token_lexeme(STRING, "hello"),
+        make_token_with_lexeme(STRING, (Lexeme){.String="hello"}),
     };
 
     result = scan_line("\"hello\" \"world\n", 1, &list);
@@ -208,7 +224,7 @@ int test_scan_line() {
     // Unterminated string, split by newline
     reset_token_list(&list);
     Token expected8[] = {
-        make_token_lexeme(STRING, "hello"),
+        make_token_with_lexeme(STRING, (Lexeme){.String="hello"}),
     };
 
     result = scan_line("\"hello\" \"world\n\"\n", 1, &list);
@@ -239,7 +255,7 @@ int test_scan_line() {
         make_token(GT),
         make_token(EQ),
         make_token(GT_EQ),
-        make_token_lexeme(STRING, "this is a string"),
+        make_token_with_lexeme(STRING, (Lexeme){.String="this is a string"}),
         make_token(DOT),
         make_token(PLUS),
         make_token(LT),

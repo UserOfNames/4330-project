@@ -6,7 +6,7 @@
 Token make_token(TokenType type) {
     Token token = {
         .type = type,
-        .lexeme = NULL,
+        .lexeme.Number = 0,
     };
 
     return token;
@@ -14,7 +14,7 @@ Token make_token(TokenType type) {
 
 
 // Generate a new token with a lexeme
-Token make_token_lexeme(TokenType type, char *lexeme) {
+Token make_token_with_lexeme(TokenType type, Lexeme lexeme) {
     Token token = make_token(type);
     token.lexeme = lexeme;
 
@@ -36,23 +36,35 @@ TokenList make_token_list() {
 }
 
 
-void reset_token_list(TokenList * list) {
+void reset_token_list(TokenList *list) {
     long i;
-    char *current_lexeme;
+    Lexeme current_lexeme;
+    Token current_token;
     Token *tokens = list -> tokens;
 
     if (tokens != NULL) {
         for (i=0; i<list->used; i++) {
-            current_lexeme = (list -> tokens)[i].lexeme;
-            if (current_lexeme != NULL) {
-                free(current_lexeme);
-                current_lexeme = NULL;
+            current_token = (list -> tokens)[i];
+            current_lexeme = current_token.lexeme;
+
+            switch (current_token.type) {
+                case STRING:
+                    if (current_lexeme.String != NULL) {
+                        free(current_lexeme.String);
+                        current_lexeme.String = NULL;
+                    }
+                    break;
+
+                case NUMBER:
+                    break;
+
+                default:
+                    break;
             }
         }
 
         free(tokens);
     }
-
 
     list -> tokens = NULL;
     list -> capacity = list -> used = 0;

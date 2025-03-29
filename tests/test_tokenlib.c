@@ -16,12 +16,12 @@ int test_make_token() {
 }
 
 
-int test_make_token_lexeme() {
-    Token token = make_token_lexeme(RPAREN, "hello world");
+int test_make_token_with_lexeme() {
+    Token token = make_token_with_lexeme(RPAREN, (Lexeme){.String="hello world"});
 
     assert(token.type == RPAREN);
-    assert(token.lexeme != NULL);
-    assert(strcmp(token.lexeme, "hello world") == 0);
+    assert(token.lexeme.String != NULL);
+    assert(strcmp(token.lexeme.String, "hello world") == 0);
 
     return EXIT_SUCCESS;
 }
@@ -94,8 +94,8 @@ int test_reset_token_list() {
     gs[13] = 0;
     strcpy(gs, "goodbye space");
 
-    add_token(&list, make_token_lexeme(RPAREN, hw));
-    add_token(&list, make_token_lexeme(LPAREN, gs));
+    add_token(&list, make_token_with_lexeme(RPAREN, (Lexeme){.String=hw}));
+    add_token(&list, make_token_with_lexeme(LPAREN, (Lexeme){.String=gs}));
     reset_token_list(&list);
 
     assert(list.tokens == NULL);

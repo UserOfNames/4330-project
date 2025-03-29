@@ -28,14 +28,21 @@ typedef enum {
     EQ, NOT_EQ, EQ_EQ,
     LT, GT, LT_EQ, GT_EQ,
 
-    STRING,
+    STRING, NUMBER,
 } TokenType;
+
+
+// Active field should be determined by Token.type
+typedef union {
+    double Number;
+    char *String;
+} Lexeme;
 
 
 // Struct representing a single token
 typedef struct {
     TokenType type;
-    char *lexeme;
+    Lexeme lexeme;
 } Token;
 
 
@@ -47,8 +54,11 @@ typedef struct {
 } TokenList;
 
 
+// Token generation
 Token make_token(TokenType type);
-Token make_token_lexeme(TokenType type, char *lexeme);
+Token make_token_with_lexeme(TokenType type, Lexeme lexeme);
+
+// Actions on token list
 TokenList make_token_list();
 void reset_token_list(TokenList *list);
 int add_token(TokenList *list, Token token);
