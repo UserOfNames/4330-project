@@ -92,13 +92,13 @@ int test_scan_line() {
     // Empty line
     TokenList list = make_token_list();
     int result = scan_line("", 1, &list);
-    assert(result == EXIT_SUCCESS);
+    assert(result == SCAN_LINE_SUCCESS);
 
 
     // Invalid line
     reset_token_list(&list);
     result = scan_line("ABCDE F G1 235", 1, &list);
-    assert(result == EXIT_FAILURE);
+    assert(result == SCAN_LINE_FAILURE);
 
 
     // Single tokens
@@ -118,7 +118,7 @@ int test_scan_line() {
     };
 
     result = scan_line(" \t ( ) . + - * / ! = > < \n", 1, &list);
-    assert(result == EXIT_SUCCESS);
+    assert(result == SCAN_LINE_SUCCESS);
     assert(match_tl(&list, expected1, sizeof(expected1) / sizeof(expected1[0])));
 
 
@@ -132,7 +132,7 @@ int test_scan_line() {
     };
 
     result = scan_line("!= == >= <=\n", 1, &list);
-    assert(result == EXIT_SUCCESS);
+    assert(result == SCAN_LINE_SUCCESS);
     assert(match_tl(&list, expected2, sizeof(expected2) / sizeof(expected2[0])));
 
 
@@ -146,11 +146,10 @@ int test_scan_line() {
         make_token(EQ),
         make_token(NOT_EQ),
         make_token(LPAREN),
-        make_token(NOT_EQ),
-    };
+        make_token(NOT_EQ), };
 
     result = scan_line("= != == ! = != ( != )\n", 1, &list);
-    assert(result == EXIT_SUCCESS);
+    assert(result == SCAN_LINE_SUCCESS);
     assert(match_tl(&list, expected3, sizeof(expected3) / sizeof(expected3[0])));
 
 
@@ -163,7 +162,7 @@ int test_scan_line() {
     };
 
     result = scan_line("()!=A", 1, &list);
-    assert(result == EXIT_FAILURE);
+    assert(result == SCAN_LINE_FAILURE);
     assert(match_tl(&list, expected4, sizeof(expected4) / sizeof(expected4[0])));
 
 
@@ -179,11 +178,11 @@ int test_scan_line() {
     };
 
     result = scan_line("() # this is a comment\n()+-#()+-\n", 1, &list);
-    assert(result == EXIT_SUCCESS);
+    assert(result == SCAN_LINE_SUCCESS);
     assert(match_tl(&list, expected5, sizeof(expected5) / sizeof(expected5[0])));
 
 
-    // String
+    // Valid string
     reset_token_list(&list);
     Token expected6[] = {
         make_token_lexeme(STRING, "hello"),
@@ -191,13 +190,46 @@ int test_scan_line() {
     };
 
     result = scan_line("\"hello\" \"world\"\n", 1, &list);
-    assert(result == EXIT_SUCCESS);
+    assert(result == SCAN_LINE_SUCCESS);
     assert(match_tl(&list, expected6, sizeof(expected6) / sizeof(expected6[0])));
+
+
+    // Unterminated string
+    reset_token_list(&list);
+    Token expected7[] = {
+        make_token_lexeme(STRING, "hello"),
+    };
+
+    result = scan_line("\"hello\" \"world\n", 1, &list);
+    assert(result == SCAN_LINE_ABORT);
+    assert(match_tl(&list, expected7, sizeof(expected7) / sizeof(expected7[0])));
+
+
+    // Unterminated string, split by newline
+    reset_token_list(&list);
+    Token expected8[] = {
+        make_token_lexeme(STRING, "hello"),
+    };
+
+    result = scan_line("\"hello\" \"world\n\"\n", 1, &list);
+    assert(result == SCAN_LINE_ABORT);
+    assert(match_tl(&list, expected8, sizeof(expected8) / sizeof(expected8[0])));
+
+
+    // Unterminated string between valid tokens
+    reset_token_list(&list);
+    Token expected9[] = {
+        make_token(LPAREN),
+    };
+
+    result = scan_line("(\"hello)\n", 1, &list);
+    assert(result == SCAN_LINE_ABORT);
+    assert(match_tl(&list, expected9, sizeof(expected9) / sizeof(expected9[0])));
 
 
     // String + comment + simple tokens + complex tokens + invalid token
     reset_token_list(&list);
-    Token expected7 [] = {
+    Token expected10 [] = {
         make_token(RPAREN),
         make_token(NOT_EQ),
         make_token(BANG),
@@ -214,8 +246,8 @@ int test_scan_line() {
     };
 
     result = scan_line(")!= \t ! = * != # this is a comment\n > = >= \"this is a string\" . + < A = <=\n", 1, &list);
-    assert(result == EXIT_FAILURE);
-    assert(match_tl(&list, expected7, sizeof(expected7) / sizeof(expected7[0])));
+    assert(result == SCAN_LINE_FAILURE);
+    assert(match_tl(&list, expected10, sizeof(expected10) / sizeof(expected10[0])));
 
     reset_token_list(&list);
     return EXIT_SUCCESS;

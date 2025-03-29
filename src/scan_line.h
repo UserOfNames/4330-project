@@ -11,7 +11,7 @@ typedef enum {
 } ScanLineResult;
 
 
-int scan_line(char *line, int line_number, TokenList *list);
+int scan_line(char *line, int line_num, TokenList *list);
 char *get_substring(char *l, char *r);
 
 #endif
