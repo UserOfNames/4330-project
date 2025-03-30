@@ -36,13 +36,13 @@ typedef enum {
 typedef union {
     double Number;
     char *String;
-} Lexeme;
+} Literal;
 
 
 // Struct representing a single token
 typedef struct {
     TokenType type;
-    Lexeme lexeme;
+    Literal literal;
 } Token;
 
 
@@ -56,7 +56,7 @@ typedef struct {
 
 // Token generation
 Token make_token(TokenType type);
-Token make_token_with_lexeme(TokenType type, Lexeme lexeme);
+Token make_token_with_literal(TokenType type, Literal lexeme);
 
 // Actions on token list
 TokenList make_token_list();

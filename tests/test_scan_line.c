@@ -33,10 +33,10 @@ _Bool match_token(Token l, Token r) {
     // so we only need to switch against one
     switch (l.type) {
         case STRING:
-            return null_strcmp(l.lexeme.String, r.lexeme.String);
+            return null_strcmp(l.literal.String, r.literal.String);
 
         case NUMBER:
-            return l.lexeme.Number == r.lexeme.Number;
+            return l.literal.Number == r.literal.Number;
 
         default:
             return true;
@@ -113,7 +113,7 @@ int test_scan_line() {
 
     // Invalid line
     reset_token_list(&list);
-    result = scan_line("ABCDE F G1 235", 1, &list);
+    result = scan_line("\\", 1, &list);
     assert(result == SCAN_LINE_FAILURE);
 
 
@@ -177,7 +177,7 @@ int test_scan_line() {
         make_token(NOT_EQ),
     };
 
-    result = scan_line("()!=A", 1, &list);
+    result = scan_line("()!=\\", 1, &list);
     assert(result == SCAN_LINE_FAILURE);
     assert(match_tl(&list, expected4, sizeof(expected4) / sizeof(expected4[0])));
 
@@ -201,8 +201,8 @@ int test_scan_line() {
     // Valid string
     reset_token_list(&list);
     Token expected6[] = {
-        make_token_with_lexeme(STRING, (Lexeme){.String="hello"}),
-        make_token_with_lexeme(STRING, (Lexeme){.String="world"}),
+        make_token_with_literal(STRING, (Literal){.String="hello"}),
+        make_token_with_literal(STRING, (Literal){.String="world"}),
     };
 
     result = scan_line("\"hello\" \"world\"\n", 1, &list);
@@ -213,7 +213,7 @@ int test_scan_line() {
     // Unterminated string
     reset_token_list(&list);
     Token expected7[] = {
-        make_token_with_lexeme(STRING, (Lexeme){.String="hello"}),
+        make_token_with_literal(STRING, (Literal){.String="hello"}),
     };
 
     result = scan_line("\"hello\" \"world\n", 1, &list);
@@ -224,7 +224,7 @@ int test_scan_line() {
     // Unterminated string, split by newline
     reset_token_list(&list);
     Token expected8[] = {
-        make_token_with_lexeme(STRING, (Lexeme){.String="hello"}),
+        make_token_with_literal(STRING, (Literal){.String="hello"}),
     };
 
     result = scan_line("\"hello\" \"world\n\"\n", 1, &list);
@@ -246,11 +246,11 @@ int test_scan_line() {
     // Numbers
     reset_token_list(&list);
     Token expected10[] = {
-        make_token_with_lexeme(NUMBER, (Lexeme){.Number=4}),
+        make_token_with_literal(NUMBER, (Literal){.Number=4}),
         make_token(DOT),
-        make_token_with_lexeme(NUMBER, (Lexeme){.Number=4.3}),
+        make_token_with_literal(NUMBER, (Literal){.Number=4.3}),
         make_token(DOT),
-        make_token_with_lexeme(NUMBER, (Lexeme){.Number=0}),
+        make_token_with_literal(NUMBER, (Literal){.Number=0}),
     };
 
     result = scan_line("4 . 4.3 . 0\n", 1, &list);
@@ -266,17 +266,17 @@ int test_scan_line() {
         make_token(EQ),
         make_token(STAR),
         make_token(NOT_EQ),
-        make_token_with_lexeme(NUMBER, (Lexeme){.Number=5}),
+        make_token_with_literal(NUMBER, (Literal){.Number=5}),
         make_token(GT),
         make_token(EQ),
         make_token(GT_EQ),
-        make_token_with_lexeme(STRING, (Lexeme){.String="this is a string"}),
+        make_token_with_literal(STRING, (Literal){.String="this is a string"}),
         make_token(DOT),
         make_token(PLUS),
         make_token(LT),
     };
 
-    result = scan_line(")!= \t ! = * != # this is a comment\n 5 > = >= \"this is a string\" . + < A = <=\n", 1, &list);
+    result = scan_line(")!= \t ! = * != # this is a comment\n 5 > = >= \"this is a string\" . + < \\ = <=\n", 1, &list);
     assert(result == SCAN_LINE_FAILURE);
     assert(match_tl(&list, expected11, sizeof(expected11) / sizeof(expected11[0])));
 

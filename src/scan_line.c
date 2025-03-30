@@ -88,6 +88,9 @@ double handle_number() {
 }
 
 
+
+
+
 int scan_line(char *line, int line_num, TokenList *list) {
     line_number = line_num; // Set global line number
     current = line;
@@ -98,7 +101,7 @@ int scan_line(char *line, int line_num, TokenList *list) {
         // its correct state before adding it to the list
         // This is an optimization over using make_token()
         token.type = DISCARD;
-        token.lexeme.Number = 0;
+        token.literal.Number = 0;
 
         switch (*current) {
             case ' ':
@@ -160,9 +163,9 @@ int scan_line(char *line, int line_num, TokenList *list) {
             // Handle strings
             case '"':
                 token.type = STRING;
-                token.lexeme.String = handle_string();
+                token.literal.String = handle_string();
 
-                if (token.lexeme.String == NULL) {
+                if (token.literal.String == NULL) {
                     fprintf(stderr, "Error parsing string on line %d\n", line_num);
                     return SCAN_LINE_ABORT;
                 }
@@ -181,9 +184,13 @@ int scan_line(char *line, int line_num, TokenList *list) {
             default:
                 if (isdigit(*current)) {
                     token.type = NUMBER;
-                    token.lexeme.Number = handle_number();
+                    token.literal.Number = handle_number();
                     current--;
                     break;
+                }
+
+                else if (isalpha(*current)) {
+                    /*handle_identifier();*/
                 }
                 
                 else {

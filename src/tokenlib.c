@@ -6,7 +6,7 @@
 Token make_token(TokenType type) {
     Token token = {
         .type = type,
-        .lexeme.Number = 0,
+        .literal.Number = 0,
     };
 
     return token;
@@ -14,9 +14,9 @@ Token make_token(TokenType type) {
 
 
 // Generate a new token with a lexeme
-Token make_token_with_lexeme(TokenType type, Lexeme lexeme) {
+Token make_token_with_literal(TokenType type, Literal lexeme) {
     Token token = make_token(type);
-    token.lexeme = lexeme;
+    token.literal = lexeme;
 
     return token;
 }
@@ -38,14 +38,14 @@ TokenList make_token_list() {
 
 void reset_token_list(TokenList *list) {
     long i;
-    Lexeme current_lexeme;
+    Literal current_lexeme;
     Token current_token;
     Token *tokens = list -> tokens;
 
     if (tokens != NULL) {
         for (i=0; i<list->used; i++) {
             current_token = (list -> tokens)[i];
-            current_lexeme = current_token.lexeme;
+            current_lexeme = current_token.literal;
 
             switch (current_token.type) {
                 case STRING:
