@@ -36,7 +36,7 @@ _Bool match_token(Token l, Token r) {
             return null_strcmp(l.lexeme.String, r.lexeme.String);
 
         case NUMBER:
-            return l.lexeme.Number != r.lexeme.Number;
+            return l.lexeme.Number == r.lexeme.Number;
 
         default:
             return true;
@@ -243,15 +243,30 @@ int test_scan_line() {
     assert(match_tl(&list, expected9, sizeof(expected9) / sizeof(expected9[0])));
 
 
+    // Numbers
+    reset_token_list(&list);
+    Token expected10[] = {
+        make_token_with_lexeme(NUMBER, (Lexeme){.Number=4}),
+        make_token(DOT),
+        make_token_with_lexeme(NUMBER, (Lexeme){.Number=4.3}),
+        make_token(DOT),
+        make_token_with_lexeme(NUMBER, (Lexeme){.Number=0}),
+    };
+
+    result = scan_line("4 . 4.3 . 0\n", 1, &list);
+    assert(match_tl(&list, expected10, sizeof(expected10) / sizeof(expected10[0])));
+
+
     // String + comment + simple tokens + complex tokens + invalid token
     reset_token_list(&list);
-    Token expected10 [] = {
+    Token expected11 [] = {
         make_token(RPAREN),
         make_token(NOT_EQ),
         make_token(BANG),
         make_token(EQ),
         make_token(STAR),
         make_token(NOT_EQ),
+        make_token_with_lexeme(NUMBER, (Lexeme){.Number=5}),
         make_token(GT),
         make_token(EQ),
         make_token(GT_EQ),
@@ -261,9 +276,9 @@ int test_scan_line() {
         make_token(LT),
     };
 
-    result = scan_line(")!= \t ! = * != # this is a comment\n > = >= \"this is a string\" . + < A = <=\n", 1, &list);
+    result = scan_line(")!= \t ! = * != # this is a comment\n 5 > = >= \"this is a string\" . + < A = <=\n", 1, &list);
     assert(result == SCAN_LINE_FAILURE);
-    assert(match_tl(&list, expected10, sizeof(expected10) / sizeof(expected10[0])));
+    assert(match_tl(&list, expected11, sizeof(expected11) / sizeof(expected11[0])));
 
     reset_token_list(&list);
     return EXIT_SUCCESS;

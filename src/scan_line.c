@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -69,7 +70,21 @@ char* handle_string() {
 
 
 double handle_number() {
-    ;
+    char *endp;
+    double result = strtod(current, &endp);
+    
+    if ((result == 0 && current == endp) || endp == NULL) {
+        fprintf(stderr, "Error: Could not parse number on line %d\n", line_number);
+        return SCAN_LINE_FAILURE;
+    }
+
+    if (errno == ERANGE) {
+        fprintf(stderr, "Error: Numeric overflow or underflow on line %d\n", line_number);
+        return SCAN_LINE_FAILURE;
+    }
+
+    current = endp;
+    return result;
 }
 
 
@@ -77,10 +92,6 @@ int scan_line(char *line, int line_num, TokenList *list) {
     line_number = line_num; // Set global line number
     current = line;
     Token token;
-
-    // Some tokens take several characters. This is used when you need to point
-    // to the start of a long token, e.g. string literals
-    char *start = line;
 
     while (*current != 0) {
         // Each loop, we reset the token to a default state, then mutate it to
@@ -168,15 +179,17 @@ int scan_line(char *line, int line_num, TokenList *list) {
             // Otherwise, the token is invalid. Stop scanning the line, but
             // continue scanning the file to catch other errors
             default:
-                start = current;
                 if (isdigit(*current)) {
                     token.type = NUMBER;
                     token.lexeme.Number = handle_number();
+                    current--;
                     break;
                 }
-
-                fprintf(stderr, "Error: Invalid token '%c' on line %d\n", *current, line_num);
-                return SCAN_LINE_FAILURE;
+                
+                else {
+                    fprintf(stderr, "Error: Invalid token '%c' on line %d\n", *current, line_num);
+                    return SCAN_LINE_FAILURE;
+                }
         }
         // End of switch statement
 
