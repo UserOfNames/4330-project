@@ -32,10 +32,9 @@ _Bool resolve_next(char expected, char *next) {
 }
 
 
-// Left pointer and right pointer to some part of a string, get a
+// Given a left pointer and right pointer to some part of a string, get a
 // substring consisting of all characters from l to r
 // Lower inclusive, upper exclusive, like a slice
-// It is the responsibility of the caller to ensure l and r are valid pointers
 char* get_substring(char *l, char *r) {
     size_t length = r - l;
 
@@ -52,6 +51,37 @@ char* get_substring(char *l, char *r) {
     result[length] = 0;
 
     return result;
+}
+
+
+// Check whether a given string is a keyword
+TokenType resolve_word(char *str) {
+    // Using a hashmap is more elegant, but
+    // this is sufficient (and much simpler)
+    // Unfortunately you can't switch against strings, so
+    // it has to be conditional chains
+    if (strcmp(str, "if") == 0) // strcmp() is safe as get_substring() null-terminates the result
+        return IF;
+    else if((strcmp(str, "else") == 0))
+        return ELSE;
+    else if((strcmp(str, "while") == 0))
+        return WHILE;
+    else if((strcmp(str, "false") == 0))
+        return FALSE;
+    else if((strcmp(str, "true") == 0))
+        return TRUE;
+    else if((strcmp(str, "and") == 0))
+        return AND;
+    else if((strcmp(str, "or") == 0))
+        return OR;
+    else if((strcmp(str, "let") == 0))
+        return LET;
+    else if((strcmp(str, "print") == 0))
+        return PRINT;
+    else if((strcmp(str, "none") == 0))
+        return NONE;
+    else
+        return IDENTIFIER;
 }
 
 
@@ -88,7 +118,16 @@ double handle_number() {
 }
 
 
+TokenType handle_identifier() {
+    char *start = current;
 
+    while (isalpha(*current) || isdigit(*current) || *current == '_') {
+        current++;
+    }
+
+    char *word = get_substring(start, current);
+    return resolve_word(word);
+}
 
 
 int scan_line(char *line, int line_num, TokenList *list) {
@@ -155,7 +194,7 @@ int scan_line(char *line, int line_num, TokenList *list) {
                 break;
 
             case '#':
-                while (current[1] != '\n' && current[1] != 0)
+                while (*current != '\n' && *current != 0)
                     current++;
                 break;
 
@@ -189,8 +228,9 @@ int scan_line(char *line, int line_num, TokenList *list) {
                     break;
                 }
 
-                else if (isalpha(*current)) {
-                    /*handle_identifier();*/
+                else if (isalpha(*current) || *current == '_') {
+                    token.type = handle_identifier();
+                    break;
                 }
                 
                 else {

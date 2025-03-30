@@ -14,9 +14,9 @@ Token make_token(TokenType type) {
 
 
 // Generate a new token with a lexeme
-Token make_token_with_literal(TokenType type, Literal lexeme) {
+Token make_token_with_literal(TokenType type, Literal literal) {
     Token token = make_token(type);
-    token.literal = lexeme;
+    token.literal = literal;
 
     return token;
 }

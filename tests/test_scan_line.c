@@ -254,12 +254,29 @@ int test_scan_line() {
     };
 
     result = scan_line("4 . 4.3 . 0\n", 1, &list);
+    assert(result == SCAN_LINE_SUCCESS);
     assert(match_tl(&list, expected10, sizeof(expected10) / sizeof(expected10[0])));
 
 
-    // String + comment + simple tokens + complex tokens + invalid token
+    // Identifiers and keywords
     reset_token_list(&list);
-    Token expected11 [] = {
+    Token expected11[] = {
+        make_token(AND),
+        make_token(IF),
+        make_token(IDENTIFIER),
+        make_token(WHILE),
+        make_token_with_literal(NUMBER, (Literal){.Number=4.2}),
+        make_token(IDENTIFIER),
+        make_token(OR),
+    };
+
+    result = scan_line("and if iff while 4.2 _under or\n", 1, &list);
+    assert(result == SCAN_LINE_SUCCESS);
+    assert(match_tl(&list, expected11, sizeof(expected11) / sizeof(expected11[0])));
+
+    // Everything
+    reset_token_list(&list);
+    Token expected12 [] = {
         make_token(RPAREN),
         make_token(NOT_EQ),
         make_token(BANG),
@@ -269,6 +286,9 @@ int test_scan_line() {
         make_token_with_literal(NUMBER, (Literal){.Number=5}),
         make_token(GT),
         make_token(EQ),
+        make_token(IDENTIFIER),
+        make_token(OR),
+        make_token(IDENTIFIER),
         make_token(GT_EQ),
         make_token_with_literal(STRING, (Literal){.String="this is a string"}),
         make_token(DOT),
@@ -276,9 +296,9 @@ int test_scan_line() {
         make_token(LT),
     };
 
-    result = scan_line(")!= \t ! = * != # this is a comment\n 5 > = >= \"this is a string\" . + < \\ = <=\n", 1, &list);
+    result = scan_line(")!= \t ! = * != # this is a comment\n 5 > = _ident or ident >= \"this is a string\" . + < \\ = <=\n", 1, &list);
     assert(result == SCAN_LINE_FAILURE);
-    assert(match_tl(&list, expected11, sizeof(expected11) / sizeof(expected11[0])));
+    assert(match_tl(&list, expected12, sizeof(expected12) / sizeof(expected12[0])));
 
     reset_token_list(&list);
     return EXIT_SUCCESS;
