@@ -8,7 +8,7 @@
 
 #include "scan_line.h"
 #include "constants.h"
-#include "tokenlib.h"
+#include "lib/tokenlib.h"
 
 
 // Pointer to the current character being scanned It's useful to allow

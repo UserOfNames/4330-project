@@ -1,7 +1,7 @@
 #ifndef SCAN_LINE_H
 #define SCAN_LINE_H
 
-#include "tokenlib.h"
+#include "lib/tokenlib.h"
 
 // scan_line() can return a number of errors, some of which must be handled differently
 typedef enum {

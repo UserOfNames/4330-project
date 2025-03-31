@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "test_tokenlib.h"
-#include "../src/tokenlib.h"
+#include "../src/lib/tokenlib.h"
 
 int test_make_token() {
     Token token = make_token(RPAREN);
