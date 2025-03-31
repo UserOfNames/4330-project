@@ -17,6 +17,8 @@ typedef enum {
 
     LPAREN, RPAREN,
 
+    LCURLY, RCURLY,
+
     DOT,
 
     PLUS, MINUS, STAR, SLASH,

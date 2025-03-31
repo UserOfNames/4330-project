@@ -157,6 +157,14 @@ int scan_line(char *line, int line_num, TokenList *list) {
                 token.type = RPAREN;
                 break;
 
+            case '{':
+                token.type = LCURLY;
+                break;
+
+            case '}':
+                token.type = RCURLY;
+                break;
+
             case '.':
                 token.type = DOT;
                 break;
