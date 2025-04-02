@@ -15,5 +15,6 @@ Stack make_stack();
 int push(Stack *stack, Token *token);
 Token* pop(Stack *stack);
 Token* top(Stack *stack);
+void destroy_stack(Stack *stack);
 
 #endif

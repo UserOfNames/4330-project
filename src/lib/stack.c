@@ -56,3 +56,10 @@ Token* top(Stack *stack) {
 
     return (stack -> stack)[stack -> used - 1];
 }
+
+// Free the stack
+void destroy_stack(Stack *stack) {
+    free(stack -> stack);
+    stack -> used  = stack -> capacity = 0;
+    stack -> stack = NULL;
+}

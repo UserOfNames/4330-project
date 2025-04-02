@@ -4,8 +4,10 @@
 #include <unistd.h>
 
 #include "test_interpret_file.h"
-#include "test_scan_line.h"
 #include "test_tokenlib.h"
+#include "test_scan_line.h"
+#include "test_stack.h"
+#include "test_queue.h"
 
 int main(int argc, char *argv[]) {
     printf("\n---------------------------------\n"
@@ -59,6 +61,72 @@ int main(int argc, char *argv[]) {
              "| scan_line(): |"
            "\n----------------\n");
     test_scan_line();
+
+
+    printf("\n-----------------\n"
+             "| make_stack(): |"
+           "\n-----------------\n");
+    test_make_stack();
+
+
+    printf("\n-------------------\n"
+             "|destroy_stack(): |"
+           "\n-------------------\n");
+    test_destroy_stack();
+
+
+    printf("\n-----------\n"
+             "| push(): |"
+           "\n-----------\n");
+    test_push();
+
+
+    printf("\n----------\n"
+             "| top(): |"
+           "\n----------\n");
+    test_top();
+
+
+    printf("\n----------\n"
+             "| pop(): |"
+           "\n----------\n");
+    test_pop();
+
+
+    printf("\n-----------------\n"
+             "| make_queue(): |"
+           "\n-----------------\n");
+    test_make_queue();
+
+
+    printf("\n----------------\n"
+             "| make_node(): |"
+           "\n----------------\n");
+    test_make_node();
+
+
+    printf("\n--------------------\n"
+             "| destroy_queue(): |"
+           "\n--------------------\n");
+    test_destroy_queue();
+
+
+    printf("\n--------------\n"
+             "| enqueue(): |"
+           "\n--------------\n");
+    test_enqueue();
+
+
+    printf("\n--------------\n"
+             "| dequeue(): |"
+           "\n--------------\n");
+    test_dequeue();
+
+
+    printf("\n-----------\n"
+             "| peek(): |"
+           "\n-----------\n");
+    test_peek();
 
 
     printf("\n---------------------\n"

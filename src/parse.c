@@ -9,11 +9,11 @@
 
 
 int parse(TokenList *token_list) {
-    ip     = token_list -> tokens;
-    length = token_list -> used;
+    _IP     = token_list -> tokens;
+    _length = token_list -> used;
 
     // Walk the token list
-    while (ip < ip + length) {
+    while (_IP < _IP + _length) {
         ;
     }
 }
