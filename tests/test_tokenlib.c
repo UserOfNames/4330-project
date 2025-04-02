@@ -16,12 +16,29 @@ int test_make_token() {
 }
 
 
-int test_make_token_with_lexeme() {
+int test_make_token_with_literal() {
     Token token = make_token_with_literal(RPAREN, (Literal){.String="hello world"});
 
     assert(token.type == RPAREN);
     assert(token.literal.String != NULL);
     assert(strcmp(token.literal.String, "hello world") == 0);
+
+    return EXIT_SUCCESS;
+}
+
+
+int test_destroy_token() {
+    Token token = make_token(PLUS);
+    destroy_token(&token);
+    assert(token.type == DISCARD);
+    assert(token.literal.Number == 0);
+
+    char *s = (char*)malloc(13);
+    strcpy(s, "Hello World!");
+    token = make_token_with_literal(STRING, (Literal){.String=s});
+    destroy_token(&token);
+    assert(token.type == DISCARD);
+    assert(token.literal.Number == 0);
 
     return EXIT_SUCCESS;
 }

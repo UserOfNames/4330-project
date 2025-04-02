@@ -60,9 +60,10 @@ typedef struct {
 } TokenList;
 
 
-// Token generation
+// Token actions
 Token make_token(TokenType type);
 Token make_token_with_literal(TokenType type, Literal literal);
+void destroy_token(Token *token);
 
 // Actions on token list
 TokenList make_token_list();

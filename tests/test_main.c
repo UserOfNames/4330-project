@@ -27,10 +27,16 @@ int main(int argc, char *argv[]) {
     test_make_token();
 
 
-    printf("\n------------------------\n"
-             "| make_token_lexeme(): |"
-           "\n------------------------\n");
-    test_make_token_with_lexeme();
+    printf("\n------------------------------\n"
+             "| make_token_with_literal(): |"
+           "\n------------------------------\n");
+    test_make_token_with_literal();
+
+
+    printf("\n--------------------\n"
+             "| destroy_token(): |"
+           "\n--------------------\n");
+    test_destroy_token();
 
 
     printf("\n----------------------\n"

@@ -13,12 +13,33 @@ Token make_token(TokenType type) {
 }
 
 
-// Generate a new token with a lexeme
+// Generate a new token with a literal value
 Token make_token_with_literal(TokenType type, Literal literal) {
     Token token = make_token(type);
     token.literal = literal;
 
     return token;
+}
+
+
+// Safely destroy a token, freeing associated memory if applicable
+void destroy_token(Token *token) {
+    switch(token -> type) {
+        case STRING:
+            free(token -> literal.String);
+            token -> literal.Number = 0;
+            token -> type = DISCARD;
+            break;
+
+        case NUMBER:
+            token -> literal.Number = 0;
+            token -> type = DISCARD;
+            break;
+
+        default:
+            token -> type = DISCARD;
+            break;
+    }
 }
 
 
@@ -38,29 +59,12 @@ TokenList make_token_list() {
 
 void reset_token_list(TokenList *list) {
     long i;
-    Literal current_lexeme;
-    Token current_token;
     Token *tokens = list -> tokens;
 
     if (tokens != NULL) {
+        // Walk the token list and destroy each token
         for (i=0; i<list->used; i++) {
-            current_token = (list -> tokens)[i];
-            current_lexeme = current_token.literal;
-
-            switch (current_token.type) {
-                case STRING:
-                    if (current_lexeme.String != NULL) {
-                        free(current_lexeme.String);
-                        current_lexeme.String = NULL;
-                    }
-                    break;
-
-                case NUMBER:
-                    break;
-
-                default:
-                    break;
-            }
+            destroy_token((list -> tokens) + i);
         }
 
         free(tokens);
