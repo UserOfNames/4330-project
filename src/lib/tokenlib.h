@@ -40,8 +40,9 @@ typedef enum {
 
 // Active field should be determined by Token.type
 typedef union {
-    double Number;
-    char *String;
+    double Number; // Number literal
+    char *String;  // String literal
+    char *Name;    // Identifier name
 } Literal;
 
 
@@ -49,6 +50,7 @@ typedef union {
 typedef struct {
     TokenType type;
     Literal literal;
+    int line; // Line number associated with the token
 } Token;
 
 

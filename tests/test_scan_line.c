@@ -10,8 +10,7 @@
 // Boolean strcmp() with null pointer handling
 _Bool null_strcmp(char *l, char *r) {
     if (l == NULL) {
-        if (r == NULL)
-            return true;
+        if (r == NULL) return true;
         return false;
     }
 
@@ -37,6 +36,9 @@ _Bool match_token(Token l, Token r) {
 
         case NUMBER:
             return l.literal.Number == r.literal.Number;
+
+        case IDENTIFIER:
+            return null_strcmp(l.literal.Name, r.literal.Name);
 
         default:
             return true;
@@ -265,10 +267,10 @@ int test_scan_line() {
     Token expected11[] = {
         make_token(AND),
         make_token(IF),
-        make_token(IDENTIFIER),
+        make_token_with_literal(IDENTIFIER, (Literal){.Name="iff"}),
         make_token(WHILE),
         make_token_with_literal(NUMBER, (Literal){.Number=4.2}),
-        make_token(IDENTIFIER),
+        make_token_with_literal(IDENTIFIER, (Literal){.Name="_under"}),
         make_token(OR),
     };
 
@@ -278,7 +280,7 @@ int test_scan_line() {
 
     // Everything
     reset_token_list(&list);
-    Token expected12 [] = {
+    Token expected12[] = {
         make_token(RPAREN),
         make_token(NOT_EQ),
         make_token(BANG),
@@ -288,9 +290,9 @@ int test_scan_line() {
         make_token_with_literal(NUMBER, (Literal){.Number=5}),
         make_token(GT),
         make_token(EQ),
-        make_token(IDENTIFIER),
+        make_token_with_literal(IDENTIFIER, (Literal){.Name="_ident"}),
         make_token(OR),
-        make_token(IDENTIFIER),
+        make_token_with_literal(IDENTIFIER, (Literal){.Name="ident"}),
         make_token(GT_EQ),
         make_token_with_literal(STRING, (Literal){.String="this is a string"}),
         make_token(DOT),
@@ -301,6 +303,58 @@ int test_scan_line() {
     result = scan_line(")!= \t ! = * != # this is a comment\n 5 > = _ident or ident >= \"this is a string\" . + < \\ = <=\n", 1, &list);
     assert(result == SCAN_LINE_FAILURE);
     assert(match_tl(&list, expected12, sizeof(expected12) / sizeof(expected12[0])));
+
+    // Complex arithmetic + boolean expression
+    reset_token_list(&list);
+    Token expected13[] = {
+        make_token(MINUS),
+        make_token_with_literal(NUMBER, (Literal){.Number=2}),
+        make_token(PLUS),
+        make_token(MINUS),
+        make_token(LPAREN),
+        make_token_with_literal(NUMBER, (Literal){.Number=4.3}),
+        make_token(SLASH),
+        make_token(LPAREN),
+        make_token_with_literal(NUMBER, (Literal){.Number=3}),
+        make_token(PLUS),
+        make_token_with_literal(NUMBER, (Literal){.Number=5}),
+        make_token(RPAREN),
+        make_token(PLUS),
+        make_token_with_literal(NUMBER, (Literal){.Number=3}),
+        make_token(RPAREN),
+        make_token(STAR),
+        make_token_with_literal(NUMBER, (Literal){.Number=7}),
+        make_token(GT),
+        make_token_with_literal(NUMBER, (Literal){.Number=5}),
+        make_token(MINUS),
+        make_token_with_literal(NUMBER, (Literal){.Number=8}),
+        make_token(OR),
+        make_token(MINUS),
+        make_token_with_literal(NUMBER, (Literal){.Number=38}),
+        make_token(MINUS),
+        make_token(MINUS),
+        make_token_with_literal(NUMBER, (Literal){.Number=2}),
+        make_token(STAR),
+        make_token_with_literal(NUMBER, (Literal){.Number=4}),
+        make_token(EQ_EQ),
+        make_token_with_literal(NUMBER, (Literal){.Number=100}),
+        make_token(AND),
+        make_token(TRUE),
+    };
+
+    result = scan_line("-2 + -(4.3 / (3 + 5) + 3) * 7 > 5 - 8 or -38 - -2 * 4 == 100 and true\n", 1, &list);
+    assert(result == SCAN_LINE_SUCCESS);
+    assert(match_tl(&list, expected13, sizeof(expected13) / sizeof(expected13[0])));
+
+
+    // Line number
+    reset_token_list(&list);
+    result = scan_line("and or\n", 16, &list);
+    assert(result == SCAN_LINE_SUCCESS);
+    printf("HERE: %d\n", list.tokens[0].line);
+    assert(list.tokens[0].line == 16);
+    assert(list.tokens[1].line == 16);
+
 
     reset_token_list(&list);
     return EXIT_SUCCESS;

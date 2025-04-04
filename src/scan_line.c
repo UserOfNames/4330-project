@@ -55,33 +55,41 @@ char* get_substring(char *l, char *r) {
 
 
 // Check whether a given string is a keyword
-TokenType resolve_word(char *str) {
+Token resolve_word(char *str) {
+    Token res = make_token(DISCARD);
     // Using a hashmap is more elegant, but
     // this is sufficient (and much simpler)
     // Unfortunately you can't switch against strings, so
     // it has to be conditional chains
     if (strcmp(str, "if") == 0) // strcmp() is safe as get_substring() null-terminates the result
-        return IF;
+        res.type = IF;
     else if((strcmp(str, "else") == 0))
-        return ELSE;
+        res.type = ELSE;
     else if((strcmp(str, "while") == 0))
-        return WHILE;
+        res.type = WHILE;
     else if((strcmp(str, "false") == 0))
-        return FALSE;
+        res.type = FALSE;
     else if((strcmp(str, "true") == 0))
-        return TRUE;
+        res.type = TRUE;
     else if((strcmp(str, "and") == 0))
-        return AND;
+        res.type = AND;
     else if((strcmp(str, "or") == 0))
-        return OR;
+        res.type = OR;
     else if((strcmp(str, "let") == 0))
-        return LET;
+        res.type = LET;
     else if((strcmp(str, "print") == 0))
-        return PRINT;
+        res.type = PRINT;
     else if((strcmp(str, "none") == 0))
-        return NONE;
-    else
-        return IDENTIFIER;
+        res.type = NONE;
+    else {
+        res.type = IDENTIFIER;
+        res.literal.Name = str;
+    }
+
+    if (res.type != IDENTIFIER)
+        free(str);
+
+    return res;
 }
 
 
@@ -118,7 +126,7 @@ double handle_number() {
 }
 
 
-TokenType handle_identifier() {
+Token handle_identifier() {
     char *start = current;
 
     while (isalpha(*current) || isdigit(*current) || *current == '_') {
@@ -206,7 +214,6 @@ int scan_line(char *line, int line_num, TokenList *list) {
                     current++;
                 break;
 
-
             // Handle strings
             case '"':
                 token.type = STRING;
@@ -218,7 +225,6 @@ int scan_line(char *line, int line_num, TokenList *list) {
                 }
 
                 break;
-
 
             case '\n':
                 // FIXME newline logic
@@ -237,7 +243,7 @@ int scan_line(char *line, int line_num, TokenList *list) {
                 }
 
                 else if (isalpha(*current) || *current == '_') {
-                    token.type = handle_identifier();
+                    token = handle_identifier();
                     break;
                 }
                 
@@ -252,6 +258,8 @@ int scan_line(char *line, int line_num, TokenList *list) {
 
         if (token.type == DISCARD)
             continue;
+
+        token.line = line_number;
 
         if (add_token(list, token) == 1) {
             fprintf(stderr, "Error scanning line %d:\n"
