@@ -75,8 +75,6 @@ Token resolve_word(char *str) {
         res.type = AND;
     else if((strcmp(str, "or") == 0))
         res.type = OR;
-    else if((strcmp(str, "let") == 0))
-        res.type = LET;
     else if((strcmp(str, "print") == 0))
         res.type = PRINT;
     else if((strcmp(str, "none") == 0))
@@ -171,6 +169,10 @@ int scan_line(char *line, int line_num, TokenList *list) {
 
             case '}':
                 token.type = RCURLY;
+                break;
+
+            case ';':
+                token.type = SEMICOLON;
                 break;
 
             case '.':

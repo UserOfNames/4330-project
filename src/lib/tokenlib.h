@@ -15,26 +15,38 @@ typedef enum {
     // Indicates a token should not be added to the list
     DISCARD,
 
+    // Special token type signifying the start of a list
+    // Should not be added by the scanner, only directly
+    START,
+
     LPAREN, RPAREN,
 
     LCURLY, RCURLY,
+
+    SEMICOLON,
 
     DOT,
 
     PLUS, MINUS, STAR, SLASH,
 
+    // Unary minus; handled at parsing stage, not scanning
+    UMINUS,
+
+    // (#) Comment
     HASH,
 
+    // Logical NOT
     BANG,
 
     EQ, NOT_EQ, EQ_EQ,
     LT, GT, LT_EQ, GT_EQ,
 
+    // Literals
     STRING, NUMBER, IDENTIFIER,
 
     // Keywords
     IF, ELSE, WHILE, FALSE, TRUE,
-    AND, OR, LET, PRINT, NONE,
+    AND, OR, PRINT, NONE,
 } TokenType;
 
 
@@ -65,11 +77,29 @@ typedef struct {
 // Token actions
 Token make_token(TokenType type);
 Token make_token_with_literal(TokenType type, Literal literal);
+Token make_number_token(double num);
+Token make_string_token(char *str);
+Token make_identifier_token(char *name);
 void destroy_token(Token *token);
 
 // Actions on token list
 TokenList make_token_list();
 void reset_token_list(TokenList *list);
 int add_token(TokenList *list, Token token);
+
+Token plus_tokens(Token l, Token r);
+Token minus_tokens(Token l, Token r);
+Token uminus_token(Token t);
+Token star_tokens(Token l, Token r);
+Token slash_tokens(Token l, Token r);
+Token bang_token(Token t);
+Token not_eq_tokens(Token l, Token r);
+Token eq_eq_tokens(Token l, Token r);
+Token lt_tokens(Token l, Token r);
+Token gt_tokens(Token l, Token r);
+Token lt_eq_tokens(Token l, Token r);
+Token gt_eq_tokens(Token l, Token r);
+Token and_tokens(Token l, Token r);
+Token or_tokens(Token l, Token r);
 
 #endif

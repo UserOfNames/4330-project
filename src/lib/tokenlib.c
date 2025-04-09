@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "tokenlib.h"
 
 // Generate a new token
@@ -21,6 +22,20 @@ Token make_token_with_literal(TokenType type, Literal literal) {
     return token;
 }
 
+// Generate a numeric token
+Token make_number_token(double num) {
+    return make_token_with_literal(NUMBER, (Literal){.Number=num});
+}
+
+// Generate a string token
+Token make_string_token(char *str) {
+    return make_token_with_literal(STRING, (Literal){.String=strdup(str)});
+}
+
+// Generate an identifier token
+Token make_identifier_token(char *name) {
+    return make_token_with_literal(IDENTIFIER, (Literal){.Name=strdup(name)});
+}
 
 // Safely destroy a token, freeing associated memory if applicable
 void destroy_token(Token *token) {
@@ -103,4 +118,109 @@ int add_token(TokenList *list, Token token) {
     list -> used++;
 
     return EXIT_SUCCESS;
+}
+
+
+
+// Add two numeric tokens
+Token plus_tokens(Token l, Token r) {
+    return make_token_with_literal (
+        NUMBER,
+        (Literal){.Number=l.literal.Number + r.literal.Number}
+    );
+}
+
+// Subtract two numeric tokens
+Token minus_tokens(Token l, Token r) {
+    return make_token_with_literal (
+        NUMBER,
+        (Literal){.Number=l.literal.Number - r.literal.Number}
+    );
+}
+
+// Negate a numeric token
+Token uminus_token(Token t) {
+    return make_token_with_literal (
+        NUMBER,
+        (Literal){.Number=-t.literal.Number}
+    );
+}
+
+// Multiply two numeric tokens
+Token star_tokens(Token l, Token r) {
+    return make_token_with_literal (
+        NUMBER,
+        (Literal){.Number=l.literal.Number * r.literal.Number}
+    );
+}
+
+// Divide two numeric tokens
+Token slash_tokens(Token l, Token r) {
+    return make_token_with_literal (
+        NUMBER,
+        (Literal){.Number=l.literal.Number / r.literal.Number}
+    );
+}
+
+// Negate a boolean token
+Token bang_token(Token t) {
+    if (t.type == TRUE)
+        return make_token(FALSE);
+    return make_token(TRUE);
+}
+
+// Compare two numeric tokens (!=)
+Token not_eq_tokens(Token l, Token r) {
+    if (l.literal.Number != r.literal.Number)
+        return make_token(TRUE);
+    return make_token(FALSE);
+}
+
+// Compare two numeric tokens (==)
+Token eq_eq_tokens(Token l, Token r) {
+    if (l.literal.Number == r.literal.Number)
+        return make_token(TRUE);
+    return make_token(FALSE);
+}
+
+// Compare two numeric tokens (<)
+Token lt_tokens(Token l, Token r) {
+    if (l.literal.Number < r.literal.Number)
+        return make_token(TRUE);
+    return make_token(FALSE);
+}
+
+// Compare two numeric tokens (>)
+Token gt_tokens(Token l, Token r) {
+    if (l.literal.Number > r.literal.Number)
+        return make_token(TRUE);
+    return make_token(FALSE);
+}
+
+// Compare two numeric tokens (<=)
+Token lt_eq_tokens(Token l, Token r) {
+    if (l.literal.Number <= r.literal.Number)
+        return make_token(TRUE);
+    return make_token(FALSE);
+}
+
+// Compare two numeric tokens (>=)
+Token gt_eq_tokens(Token l, Token r) {
+    if (l.literal.Number >= r.literal.Number)
+        return make_token(TRUE);
+    return make_token(FALSE);
+}
+
+// AND two boolean tokens
+Token and_tokens(Token l, Token r) {
+    if (l.type == TRUE && r.type == TRUE)
+        return make_token(TRUE);
+    return make_token(FALSE);
+}
+
+// OR two boolean tokens
+Token or_tokens(Token l, Token r) {
+    if (l.type == TRUE || r.type == TRUE)
+        return make_token(TRUE);
+    return make_token(FALSE);
 }

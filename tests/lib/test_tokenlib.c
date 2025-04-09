@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "test_tokenlib.h"
-#include "../src/lib/tokenlib.h"
+#include "../../src/lib/tokenlib.h"
 
 int test_make_token() {
     Token token = make_token(RPAREN);
@@ -26,6 +26,34 @@ int test_make_token_with_literal() {
     return EXIT_SUCCESS;
 }
 
+int test_make_number_token() {
+    Token token = make_number_token(-4.1);
+
+    assert(token.type == NUMBER);
+    assert(token.literal.Number == -4.1);
+
+    return EXIT_SUCCESS;
+}
+
+int test_make_string_token() {
+    Token token = make_string_token("hello world");
+
+    assert(token.type == STRING);
+    assert(strcmp(token.literal.String, "hello world") == 0);
+
+    free(token.literal.String);
+    return EXIT_SUCCESS;
+}
+
+int test_make_identifier_token() {
+    Token token = make_identifier_token("_ident");
+
+    assert(token.type == IDENTIFIER);
+    assert(strcmp(token.literal.Name, "_ident") == 0);
+
+    free(token.literal.Name);
+    return EXIT_SUCCESS;
+}
 
 int test_destroy_token() {
     Token token = make_token(PLUS);

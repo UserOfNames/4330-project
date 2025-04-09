@@ -4,10 +4,12 @@
 #include <unistd.h>
 
 #include "test_interpret_file.h"
-#include "test_tokenlib.h"
+#include "lib/test_tokenlib.h"
 #include "test_scan_line.h"
-#include "test_stack.h"
-#include "test_queue.h"
+#include "lib/parse/test_stack.h"
+#include "lib/parse/test_queue.h"
+#include "lib/parse/test_variables.h"
+#include "lib/parse/test_parselib.h"
 
 int main(int argc, char *argv[]) {
     printf("\n---------------------------------\n"
@@ -31,6 +33,24 @@ int main(int argc, char *argv[]) {
              "| make_token_with_literal(): |"
            "\n------------------------------\n");
     test_make_token_with_literal();
+
+
+    printf("\n------------------------\n"
+             "| make_number_token(): |"
+           "\n------------------------\n");
+    test_make_number_token();
+
+
+    printf("\n------------------------\n"
+             "| make_string_token(): |"
+           "\n------------------------\n");
+    test_make_string_token();
+
+
+    printf("\n----------------------------\n"
+             "| make_identifier_token(): |"
+           "\n----------------------------\n");
+    test_make_identifier_token();
 
 
     printf("\n--------------------\n"
@@ -72,31 +92,31 @@ int main(int argc, char *argv[]) {
     printf("\n-----------------\n"
              "| make_stack(): |"
            "\n-----------------\n");
-    test_make_stack();
+    test_make_ptr_stack();
 
 
     printf("\n-------------------\n"
              "|destroy_stack(): |"
            "\n-------------------\n");
-    test_destroy_stack();
+    test_destroy_ptr_stack();
 
 
     printf("\n-----------\n"
              "| push(): |"
            "\n-----------\n");
-    test_push();
+    test_push_ptr();
 
 
     printf("\n----------\n"
              "| top(): |"
            "\n----------\n");
-    test_top();
+    test_top_ptr();
 
 
     printf("\n----------\n"
              "| pop(): |"
            "\n----------\n");
-    test_pop();
+    test_pop_ptr();
 
 
     printf("\n-----------------\n"
@@ -133,6 +153,18 @@ int main(int argc, char *argv[]) {
              "| peek(): |"
            "\n-----------\n");
     test_peek();
+
+
+    printf("\n--------------\n"
+             "| variables: |"
+           "\n--------------\n");
+    test_variables();
+
+
+    printf("\n-----------------------\n"
+             "| parse_expression(): |"
+           "\n-----------------------\n");
+    test_parse_expression();
 
 
     printf("\n---------------------\n"

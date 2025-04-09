@@ -126,6 +126,7 @@ int test_scan_line() {
         make_token(RPAREN),
         make_token(LCURLY),
         make_token(RCURLY),
+        make_token(SEMICOLON),
         make_token(DOT),
         make_token(PLUS),
         make_token(MINUS),
@@ -137,7 +138,7 @@ int test_scan_line() {
         make_token(LT),
     };
 
-    result = scan_line(" \t ( ) {} . + - * / ! = > < \n", 1, &list);
+    result = scan_line(" \t ( ) {} ; . + - * / ! = > < \n", 1, &list);
     assert(result == SCAN_LINE_SUCCESS);
     assert(match_tl(&list, expected1, sizeof(expected1) / sizeof(expected1[0])));
 
@@ -333,6 +334,8 @@ int test_scan_line() {
         make_token_with_literal(NUMBER, (Literal){.Number=38}),
         make_token(MINUS),
         make_token(MINUS),
+        make_token(MINUS),
+        make_token(MINUS),
         make_token_with_literal(NUMBER, (Literal){.Number=2}),
         make_token(STAR),
         make_token_with_literal(NUMBER, (Literal){.Number=4}),
@@ -342,7 +345,7 @@ int test_scan_line() {
         make_token(TRUE),
     };
 
-    result = scan_line("-2 + -(4.3 / (3 + 5) + 3) * 7 > 5 - 8 or -38 - -2 * 4 == 100 and true\n", 1, &list);
+    result = scan_line("-2 + -(4.3 / (3 + 5) + 3) * 7 > 5 - 8 or -38 - ---2 * 4 == 100 and true\n", 1, &list);
     assert(result == SCAN_LINE_SUCCESS);
     assert(match_tl(&list, expected13, sizeof(expected13) / sizeof(expected13[0])));
 

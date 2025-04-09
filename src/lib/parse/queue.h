@@ -3,12 +3,12 @@
 
 #include <stdbool.h>
 
-#include "tokenlib.h"
+#include "../tokenlib.h"
 
 // Node for the linked list underlying the queue implementation
 typedef struct Node Node;
 struct Node {
-    double num;
+    Token token;
     Node *next;
 };
 
@@ -19,17 +19,11 @@ typedef struct {
     long length;
 } Queue;
 
-// Result of dequeue
-typedef struct {
-    _Bool success;
-    double result;
-} DoubleResult;
-
 Queue make_queue();
-Node* make_node(double num);
-int enqueue(Queue *queue, double num);
-DoubleResult dequeue(Queue *queue);
-DoubleResult peek(Queue *queue);
+Node* make_node(Token token);
+int enqueue(Queue *queue, Token token);
+Token dequeue(Queue *queue);
+Token peek(Queue *queue);
 void destroy_queue(Queue *queue);
 
 #endif

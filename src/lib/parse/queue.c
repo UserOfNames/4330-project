@@ -14,20 +14,20 @@ Queue make_queue() {
     return res;
 }
 
-Node* make_node(double num) {
+Node* make_node(Token token) {
     Node *res = (Node*)malloc(sizeof(Node));
 
     if (res == NULL)
         return NULL;
 
-    res -> num  = num;
-    res -> next = NULL;
+    res -> token = token;
+    res -> next  = NULL;
 
     return res;
 }
 
-int enqueue(Queue *queue, double num) {
-    Node *new_tail = make_node(num);
+int enqueue(Queue *queue, Token token) {
+    Node *new_tail = make_node(token);
 
     if (new_tail == NULL)
         return EXIT_FAILURE;
@@ -46,18 +46,11 @@ int enqueue(Queue *queue, double num) {
 
 // Free the head node, return its value, and update the head
 // to point to the previous head's 'next'
-DoubleResult dequeue(Queue *queue) {
-    DoubleResult result = { .success = true };
-
-    if (queue -> length == 0) {
-        fprintf(stderr, "Error: Attempted to dequeue an empty queue\n");
-        // I hate C error handling I hate C error handling I hate C error handling
-        result.success = false;
-        return result;
-    }
-
+// The caller should determine whether the queue is empty
+// before calling this
+Token dequeue(Queue *queue) {
     Node *killme = queue -> head;
-    result.result = killme -> num;
+    Token result = killme -> token;
 
     queue -> head = queue -> head -> next;
 
@@ -70,15 +63,15 @@ DoubleResult dequeue(Queue *queue) {
     return result;
 }
 
-DoubleResult peek(Queue *queue) {
-    DoubleResult result = { .success = true };
+Token peek(Queue *queue) {
+    Token result;
 
     if (queue -> length == 0) {
-        result.success = false;
+        result.type = DISCARD;
         return result;
     }
 
-    result.result = queue -> head -> num;
+    result = queue -> head -> token;
 
     return result;
 }
