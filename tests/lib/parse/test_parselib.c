@@ -370,5 +370,175 @@ int test_parse_expression() {
     result = parse_expression(&table);
     assert(token_eq(result, expected));
 
+    // Complex + variables
+    Token expr22[] = {
+        make_token(NEGATE),
+        make_identifier_token("x"),
+        make_token(PLUS),
+        make_token(NEGATE),
+        make_token(LPAREN),
+        make_number_token(4.3),
+        make_token(SLASH),
+        make_token(LPAREN),
+        make_identifier_token("y"),
+        make_token(PLUS),
+        make_number_token(5.0),
+        make_token(RPAREN),
+        make_token(PLUS),
+        make_number_token(3.0),
+        make_token(RPAREN),
+        make_token(STAR),
+        make_number_token(7.0),
+        make_token(GT),
+        make_number_token(5.0),
+        make_token(MINUS),
+        make_number_token(8.0),
+        make_token(OR),
+        make_token(NEGATE),
+        make_number_token(38),
+        make_token(MINUS),
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_number_token(2.0),
+        make_token(STAR),
+        make_number_token(4.0),
+        make_token(EQ_EQ),
+        make_number_token(100),
+        make_token(AND),
+        make_identifier_token("t"),
+    };
+    set_variable(&table, "x", make_number_token(2.0));
+    set_variable(&table, "y", make_number_token(3.0));
+    set_variable(&table, "t", make_token(TRUE));
+    _length = (sizeof(expr22) / sizeof(expr22[0]));
+    _IP = expr22;
+    expected = make_token(FALSE);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Complex arithmetic + variables
+    Token expr23[] = {
+        make_token(NEGATE),
+        make_identifier_token("x"),
+        make_token(PLUS),
+        make_token(NEGATE),
+        make_token(LPAREN),
+        make_number_token(4.3),
+        make_token(SLASH),
+        make_token(LPAREN),
+        make_identifier_token("y"),
+        make_token(PLUS),
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_number_token(5.0),
+        make_token(RPAREN),
+        make_token(PLUS),
+        make_number_token(3.0),
+        make_token(RPAREN),
+        make_token(STAR),
+        make_number_token(7.0),
+    };
+    _length = (sizeof(expr23) / sizeof(expr23[0]));
+    _IP = expr23;
+    expected = make_number_token(-2+-(4.3/(3+-(-5))+3)*7);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Complex arithmetic + invalid variable name
+    Token expr24[] = {
+        make_token(NEGATE),
+        make_identifier_token("x"),
+        make_token(PLUS),
+        make_token(NEGATE),
+        make_token(LPAREN),
+        make_number_token(4.3),
+        make_token(SLASH),
+        make_token(LPAREN),
+        make_identifier_token("z"),
+        make_token(PLUS),
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_number_token(5.0),
+        make_token(RPAREN),
+        make_token(PLUS),
+        make_number_token(3.0),
+        make_token(RPAREN),
+        make_token(STAR),
+        make_number_token(7.0),
+    };
+    _length = (sizeof(expr24) / sizeof(expr24[0]));
+    _IP = expr24;
+    expected = make_token(DISCARD);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Complex arithmetic + invalid variable type
+    Token expr25[] = {
+        make_token(NEGATE),
+        make_identifier_token("x"),
+        make_token(PLUS),
+        make_token(NEGATE),
+        make_token(LPAREN),
+        make_number_token(4.3),
+        make_token(SLASH),
+        make_token(LPAREN),
+        make_identifier_token("z"),
+        make_token(PLUS),
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_number_token(5.0),
+        make_token(RPAREN),
+        make_token(PLUS),
+        make_number_token(3.0),
+        make_token(RPAREN),
+        make_token(STAR),
+        make_number_token(7.0),
+    };
+    set_variable(&table, "z", make_string_token("hi"));
+    _length = (sizeof(expr25) / sizeof(expr25[0]));
+    _IP = expr25;
+    expected = make_token(DISCARD);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Invalid type: arithmetic operator
+    Token expr26[] = {
+        make_token(TRUE),
+        make_token(PLUS),
+        make_number_token(4.0),
+    };
+    _length = (sizeof(expr26) / sizeof(expr26[0]));
+    _IP = expr26;
+    expected = make_token(DISCARD);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Invalid type: boolean operator
+    Token expr27[] = {
+        make_number_token(3.0),
+        make_token(AND),
+        make_token(TRUE),
+    };
+    _length = (sizeof(expr27) / sizeof(expr27[0]));
+    _IP = expr27;
+    expected = make_token(DISCARD);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Unexpected token in expresssion
+    Token expr28[] = {
+        make_number_token(4.2),
+        make_token(AND),
+        make_number_token(4.3),
+        make_token(RCURLY),
+    };
+    _length = (sizeof(expr28) / sizeof(expr28[0]));
+    _IP = expr28;
+    expected = make_token(DISCARD);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    destroy_variables(&table);
     return EXIT_SUCCESS;
 }

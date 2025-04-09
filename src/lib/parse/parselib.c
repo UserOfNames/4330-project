@@ -117,6 +117,13 @@ void pe_err(Token *res, _Bool *break_loop) {
     *break_loop = true;
 }
 
+// Indicate invalid types passed to an operand
+void pe_operand_err(Token *res, _Bool *break_loop, char *op) {
+    fprintf(stderr, "Error: Invalid types for operator \n");
+    res -> type = DISCARD;
+    *break_loop = true;
+}
+
 // Handle an operator for parse_expression()
 void pe_handle_operator(Token operator, Queue *output, TokenStack *operators) {
     int precedence = get_precedence(operator.type);
@@ -130,6 +137,11 @@ void pe_handle_operator(Token operator, Queue *output, TokenStack *operators) {
     push_token(operators, operator);
 }
 
+// Check whether two operands are both boolean
+_Bool are_boolean(Token l, Token r) {
+    return ((l.type == TRUE || l.type == FALSE) &&
+            (r.type == TRUE || r.type == FALSE));
+}
 
 Token evaluate_queue(Queue *q) {
     TokenStack s = make_token_stack();
@@ -161,6 +173,11 @@ Token evaluate_queue(Queue *q) {
                 // First popped -> second operand
                 r = pop_token(&s);
                 l = pop_token(&s);
+                if (l.type != NUMBER || r.type != NUMBER) {
+                    pe_err(&result, &break_loop);
+                    break;
+                }
+
                 push_token(&s, plus_tokens(l, r));
                 break;
 
@@ -172,6 +189,11 @@ Token evaluate_queue(Queue *q) {
 
                 r = pop_token(&s);
                 l = pop_token(&s);
+                if (l.type != NUMBER || r.type != NUMBER) {
+                    pe_err(&result, &break_loop);
+                    break;
+                }
+
                 push_token(&s, minus_tokens(l, r));
                 break;
 
@@ -182,6 +204,11 @@ Token evaluate_queue(Queue *q) {
                 }
 
                 r = pop_token(&s);
+                if (r.type != NUMBER) {
+                    pe_err(&result, &break_loop);
+                    break;
+                }
+
                 push_token(&s, negate_token(r));
                 break;
 
@@ -193,6 +220,11 @@ Token evaluate_queue(Queue *q) {
 
                 r = pop_token(&s);
                 l = pop_token(&s);
+                if (l.type != NUMBER || r.type != NUMBER) {
+                    pe_err(&result, &break_loop);
+                    break;
+                }
+
                 push_token(&s, star_tokens(l, r));
                 break;
 
@@ -204,6 +236,11 @@ Token evaluate_queue(Queue *q) {
 
                 r = pop_token(&s);
                 l = pop_token(&s);
+                if (l.type != NUMBER || r.type != NUMBER) {
+                    pe_err(&result, &break_loop);
+                    break;
+                }
+
                 push_token(&s, slash_tokens(l, r));
                 break;
 
@@ -265,7 +302,6 @@ Token evaluate_queue(Queue *q) {
 
                 r = pop_token(&s);
                 l = pop_token(&s);
-
                 if (l.type != NUMBER || r.type != NUMBER) {
                     pe_err(&result, &break_loop);
                     break;
@@ -282,6 +318,11 @@ Token evaluate_queue(Queue *q) {
 
                 r = pop_token(&s);
                 l = pop_token(&s);
+                if (l.type != NUMBER || r.type != NUMBER) {
+                    pe_err(&result, &break_loop);
+                    break;
+                }
+
                 push_token(&s, gt_tokens(l, r));
                 break;
 
@@ -293,6 +334,11 @@ Token evaluate_queue(Queue *q) {
 
                 r = pop_token(&s);
                 l = pop_token(&s);
+                if (l.type != NUMBER || r.type != NUMBER) {
+                    pe_err(&result, &break_loop);
+                    break;
+                }
+
                 push_token(&s, lt_eq_tokens(l, r));
                 break;
 
@@ -304,6 +350,11 @@ Token evaluate_queue(Queue *q) {
 
                 r = pop_token(&s);
                 l = pop_token(&s);
+                if (l.type != NUMBER || r.type != NUMBER) {
+                    pe_err(&result, &break_loop);
+                    break;
+                }
+
                 push_token(&s, gt_tokens(l, r));
                 break;
 
@@ -315,6 +366,11 @@ Token evaluate_queue(Queue *q) {
 
                 r = pop_token(&s);
                 l = pop_token(&s);
+                if (!are_boolean(r, l)) {
+                    pe_err(&result, &break_loop);
+                    break;
+                }
+
                 push_token(&s, and_tokens(l, r));
                 break;
 
@@ -326,6 +382,11 @@ Token evaluate_queue(Queue *q) {
 
                 r = pop_token(&s);
                 l = pop_token(&s);
+                if (!are_boolean(r, l)) {
+                    pe_err(&result, &break_loop);
+                    break;
+                }
+
                 push_token(&s, or_tokens(l, r));
                 break;
 
@@ -526,12 +587,23 @@ Token parse_expression(Variable **table) {
                 break;
 
             // All other types are invalid for an arithmetic expression,
-            // so finish evaluating
+            // so throw an error
             default:
+                fprintf(stderr, "Error: Unexpected token in expression on line %d\n", line);
+                result.type = DISCARD;
+                break_loop = true;
                 break;
         }
     }
     // End of initial while loop
+
+    // If there was an error, skip evaluation
+    if (result.type == DISCARD) {
+        destroy_queue(&output);
+        destroy_token_stack(&operators);
+        return result;
+    }
+
     while (operators.used > 0) {
         if (top_token(&operators).type == LPAREN) {
             fprintf(stderr, "Error: Mismatched parentheses in expression on line %d\n", line);
@@ -542,13 +614,6 @@ Token parse_expression(Variable **table) {
         }
 
         enqueue(&output, pop_token(&operators));
-    }
-
-    // If there was an error, skip evaluation
-    if (result.type == DISCARD) {
-        destroy_queue(&output);
-        destroy_token_stack(&operators);
-        return result;
     }
 
     result = evaluate_queue(&output);
