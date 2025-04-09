@@ -532,6 +532,14 @@ Token parse_expression(Variable **table) {
         }
     }
     // End of initial while loop
+
+    // If there was an error, skip evaluation
+    if (result.type == DISCARD) {
+        destroy_queue(&output);
+        destroy_token_stack(&operators);
+        return result;
+    }
+
     while (operators.used > 0) {
         if (top_token(&operators).type == LPAREN) {
             fprintf(stderr, "Error: Mismatched parentheses in expression on line %d\n", line);
@@ -542,13 +550,6 @@ Token parse_expression(Variable **table) {
         }
 
         enqueue(&output, pop_token(&operators));
-    }
-
-    // If there was an error, skip evaluation
-    if (result.type == DISCARD) {
-        destroy_queue(&output);
-        destroy_token_stack(&operators);
-        return result;
     }
 
     result = evaluate_queue(&output);
