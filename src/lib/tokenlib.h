@@ -15,10 +15,6 @@ typedef enum {
     // Indicates a token should not be added to the list
     DISCARD,
 
-    // Special token type signifying the start of a list
-    // Should not be added by the scanner, only directly
-    START,
-
     LPAREN, RPAREN,
 
     LCURLY, RCURLY,
@@ -27,10 +23,7 @@ typedef enum {
 
     DOT,
 
-    PLUS, MINUS, STAR, SLASH,
-
-    // Unary minus; handled at parsing stage, not scanning
-    UMINUS,
+    PLUS, MINUS, NEGATE, STAR, SLASH,
 
     // (#) Comment
     HASH,
@@ -89,7 +82,7 @@ int add_token(TokenList *list, Token token);
 
 Token plus_tokens(Token l, Token r);
 Token minus_tokens(Token l, Token r);
-Token uminus_token(Token t);
+Token negate_token(Token t);
 Token star_tokens(Token l, Token r);
 Token slash_tokens(Token l, Token r);
 Token bang_token(Token t);

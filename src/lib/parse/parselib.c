@@ -81,7 +81,7 @@ int get_precedence(TokenType operator) {
             return 4;
         case MINUS:
             return 4;
-        case UMINUS:
+        case NEGATE:
             return 7;
         case STAR:
             return 5;
@@ -175,14 +175,14 @@ Token evaluate_queue(Queue *q) {
                 push_token(&s, minus_tokens(l, r));
                 break;
 
-            case UMINUS:
+            case NEGATE:
                 if (s.used < 1) {
                     pe_err(&result, &break_loop);
                     break;
                 }
 
                 r = pop_token(&s);
-                push_token(&s, uminus_token(l));
+                push_token(&s, negate_token(r));
                 break;
 
             case STAR:
@@ -220,7 +220,7 @@ Token evaluate_queue(Queue *q) {
                     break;
                 }
 
-                push_token(&s, bang_token(l));
+                push_token(&s, bang_token(r));
                 break;
 
             case NOT_EQ:
@@ -364,6 +364,9 @@ Token parse_expression(Variable **table) {
     // to something besides DISCARD since that's used for errors
     Token result = {.type=NUMBER};
 
+    // Number of consecutive negations
+    int neg_count = 0;
+
     _Bool break_loop = false;
     Token *endp = _IP + _length;
     while (_IP < endp && _IP -> type != SEMICOLON && !break_loop) {
@@ -440,22 +443,24 @@ Token parse_expression(Variable **table) {
                 _IP++;
                 break;
 
-            // We must determine whether the - is unary or binary
             case MINUS:
-                // If the previous token is an operator, an LPAREN,
-                // or if there is no previous token, the - is unary
-                if (get_precedence((_IP - 1) -> type) != -1 ||
-                    (_IP - 1) -> type == LPAREN ||
-                    (_IP - 1) -> type == START) {
-                    _IP -> type = UMINUS;
-                }
                 pe_handle_operator(*_IP, &output, &operators);
                 _IP++;
                 break;
 
-            // A previously evaluated minus may reappear, e.g. in a loop
-            case UMINUS:
-                pe_handle_operator(*_IP, &output, &operators);
+            case NEGATE:
+                // Consume all consecutive negations; even = no effect, odd = negate
+                neg_count = 0;
+                while (_IP -> type == NEGATE && _IP < endp) {
+                    neg_count++;
+                    _IP++;
+                }
+
+                // Parity check
+                if ((neg_count & 1) == 0)
+                    break;
+                pe_handle_operator(_IP[-1], &output, &operators);
+                break;
 
             case STAR:
                 pe_handle_operator(*_IP, &output, &operators);
@@ -468,8 +473,16 @@ Token parse_expression(Variable **table) {
                 break;
 
             case BANG:
-                pe_handle_operator(*_IP, &output, &operators);
-                _IP++;
+                // Consume all NOTs; even = no effect, odd = negate
+                neg_count = 0;
+                while (_IP -> type == BANG && _IP < endp) {
+                    neg_count++;
+                    _IP++;
+                }
+
+                if ((neg_count & 1) == 0)
+                    break;
+                pe_handle_operator(_IP[-1], &output, &operators);
                 break;
 
             case EQ_EQ:

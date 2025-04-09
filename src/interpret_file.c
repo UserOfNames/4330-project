@@ -24,8 +24,7 @@ int interpret_file(char *path_str) {
     // Iterate over the file line-by-line, passing each line to the scanner
     int line_number = 0;
     TokenList token_list = make_token_list();
-    // Prime the token list with an initial token
-    add_token(&token_list, make_token(START));
+
     _Bool break_loop = false;
     while (fgets(line, MAX_LINE_LENGTH + 2, path) != NULL && !break_loop) {
         line_number++;

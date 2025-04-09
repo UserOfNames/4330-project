@@ -187,6 +187,10 @@ int scan_line(char *line, int line_num, TokenList *list) {
                 token.type = MINUS;
                 break;
 
+            case '~':
+                token.type = NEGATE;
+                break;
+
             case '*':
                 token.type = STAR;
                 break;

@@ -139,7 +139,7 @@ Token minus_tokens(Token l, Token r) {
 }
 
 // Negate a numeric token
-Token uminus_token(Token t) {
+Token negate_token(Token t) {
     return make_token_with_literal (
         NUMBER,
         (Literal){.Number=-t.literal.Number}

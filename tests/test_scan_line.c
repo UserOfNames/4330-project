@@ -130,6 +130,7 @@ int test_scan_line() {
         make_token(DOT),
         make_token(PLUS),
         make_token(MINUS),
+        make_token(NEGATE),
         make_token(STAR),
         make_token(SLASH),
         make_token(BANG),
@@ -138,7 +139,7 @@ int test_scan_line() {
         make_token(LT),
     };
 
-    result = scan_line(" \t ( ) {} ; . + - * / ! = > < \n", 1, &list);
+    result = scan_line(" \t ( ) {} ; . + - ~ * / ! = > < \n", 1, &list);
     assert(result == SCAN_LINE_SUCCESS);
     assert(match_tl(&list, expected1, sizeof(expected1) / sizeof(expected1[0])));
 

@@ -19,9 +19,6 @@ int parse(TokenList *token_list) {
     // Walk the token list
     while (_IP < _IP + _length && !break_loop) {
         switch (_IP -> type) {
-            case START:
-                _IP++;
-
             case IDENTIFIER:
                 handle_identifier(&table);
                 break;

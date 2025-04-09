@@ -180,9 +180,10 @@ int test_parse_expression() {
     result = parse_expression(&table);
     assert(token_eq(result, expected));
 
+    // Negation, singular
     Token expr10[] = {
-        make_token(MINUS),
-        make_number_token(4),
+        make_token(NEGATE),
+        make_number_token(4.0),
     };
     _length = (sizeof(expr10) / sizeof(expr10[0]));
     _IP = expr10;
@@ -190,50 +191,184 @@ int test_parse_expression() {
     result = parse_expression(&table);
     assert(token_eq(result, expected));
 
-    // // Complex
-    // Token expr5[] = {
-    //     make_token(MINUS),
-    //     make_token(2.0),
-    //     make_token(PLUS),
-    //     make_token(MINUS),
-    //     make_token(LPAREN),
-    //     make_number_token(4.3),
-    //     make_token(SLASH),
-    //     make_token(LPAREN),
-    //     make_number_token(3.0),
-    //     make_token(PLUS),
-    //     make_number_token(5.0),
-    //     make_token(RPAREN),
-    //     make_token(PLUS),
-    //     make_number_token(3.0),
-    //     make_token(RPAREN),
-    //     make_token(STAR),
-    //     make_number_token(7.0),
-    //     make_token(GT),
-    //     make_number_token(5.0),
-    //     make_token(MINUS),
-    //     make_number_token(8.0),
-    //     make_token(OR),
-    //     make_token(MINUS),
-    //     make_number_token(38),
-    //     make_token(MINUS),
-    //     make_token(MINUS),
-    //     make_token(MINUS),
-    //     make_token(MINUS),
-    //     make_number_token(2.0),
-    //     make_token(STAR),
-    //     make_number_token(4.0),
-    //     make_token(EQ_EQ),
-    //     make_number_token(100),
-    //     make_token(AND),
-    //     make_token(TRUE),
-    // };
-    // _length = (sizeof(expr5) / sizeof(expr5[0]));
-    // _IP = expr5;
-    // expected = make_token(FALSE);
-    // result = parse_expression(&table);
-    //
-    // assert(token_eq(result, expected));
+    // Negation, double
+    Token expr11[] = {
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_number_token(4.0),
+    };
+    _length = (sizeof(expr11) / sizeof(expr11[0]));
+    _IP = expr11;
+    expected = make_number_token(4);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Negation, 5x
+    Token expr12[] = {
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_number_token(4.0),
+    };
+    _length = (sizeof(expr12) / sizeof(expr12[0]));
+    _IP = expr12;
+    expected = make_number_token(-4);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Negation of 0
+    Token expr13[] = {
+        make_token(NEGATE),
+        make_number_token(0.0),
+    };
+    _length = (sizeof(expr13) / sizeof(expr13[0]));
+    _IP = expr13;
+    expected = make_number_token(0);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Negation of a negative
+    Token expr14[] = {
+        make_token(NEGATE),
+        make_number_token(-4.0),
+    };
+    _length = (sizeof(expr14) / sizeof(expr14[0]));
+    _IP = expr14;
+    expected = make_number_token(4.0);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Double negation of a negative
+    Token expr15[] = {
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_number_token(-4.0),
+    };
+    _length = (sizeof(expr15) / sizeof(expr15[0]));
+    _IP = expr15;
+    expected = make_number_token(-4.0);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Logical negation, singular, false
+    Token expr16[] = {
+        make_token(BANG),
+        make_token(FALSE),
+    };
+    _length = (sizeof(expr16) / sizeof(expr16[0]));
+    _IP = expr16;
+    expected = make_token(TRUE);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Logical negation, singular, true
+    Token expr17[] = {
+        make_token(BANG),
+        make_token(TRUE),
+    };
+    _length = (sizeof(expr17) / sizeof(expr17[0]));
+    _IP = expr17;
+    expected = make_token(FALSE);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Logical negation, double, true
+    Token expr18[] = {
+        make_token(BANG),
+        make_token(BANG),
+        make_token(TRUE),
+    };
+    _length = (sizeof(expr18) / sizeof(expr18[0]));
+    _IP = expr18;
+    expected = make_token(TRUE);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Logical negation, double, true
+    Token expr19[] = {
+        make_token(BANG),
+        make_token(BANG),
+        make_token(FALSE),
+    };
+    _length = (sizeof(expr19) / sizeof(expr19[0]));
+    _IP = expr19;
+    expected = make_token(FALSE);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Complex arithmetic
+    Token expr20[] = {
+        make_token(NEGATE),
+        make_number_token(2.0),
+        make_token(PLUS),
+        make_token(NEGATE),
+        make_token(LPAREN),
+        make_number_token(4.3),
+        make_token(SLASH),
+        make_token(LPAREN),
+        make_number_token(3.0),
+        make_token(PLUS),
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_number_token(5.0),
+        make_token(RPAREN),
+        make_token(PLUS),
+        make_number_token(3.0),
+        make_token(RPAREN),
+        make_token(STAR),
+        make_number_token(7.0),
+    };
+    _length = (sizeof(expr20) / sizeof(expr20[0]));
+    _IP = expr20;
+    expected = make_number_token(-2+-(4.3/(3+-(-5))+3)*7);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
+    // Complex
+    Token expr21[] = {
+        make_token(NEGATE),
+        make_number_token(2.0),
+        make_token(PLUS),
+        make_token(NEGATE),
+        make_token(LPAREN),
+        make_number_token(4.3),
+        make_token(SLASH),
+        make_token(LPAREN),
+        make_number_token(3.0),
+        make_token(PLUS),
+        make_number_token(5.0),
+        make_token(RPAREN),
+        make_token(PLUS),
+        make_number_token(3.0),
+        make_token(RPAREN),
+        make_token(STAR),
+        make_number_token(7.0),
+        make_token(GT),
+        make_number_token(5.0),
+        make_token(MINUS),
+        make_number_token(8.0),
+        make_token(OR),
+        make_token(NEGATE),
+        make_number_token(38),
+        make_token(MINUS),
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_token(NEGATE),
+        make_number_token(2.0),
+        make_token(STAR),
+        make_number_token(4.0),
+        make_token(EQ_EQ),
+        make_number_token(100),
+        make_token(AND),
+        make_token(TRUE),
+    };
+    _length = (sizeof(expr21) / sizeof(expr21[0]));
+    _IP = expr21;
+    expected = make_token(FALSE);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
 
     return EXIT_SUCCESS;
 }
