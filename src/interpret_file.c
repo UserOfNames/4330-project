@@ -52,6 +52,9 @@ int interpret_file(char *path_str) {
         }
     }
 
+    // Terminate the token list
+    add_token(&token_list, make_token(ENDPOINT));
+
     reset_token_list(&token_list);
 
     fclose(path);

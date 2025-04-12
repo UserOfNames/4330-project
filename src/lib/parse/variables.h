@@ -1,5 +1,5 @@
-#ifndef PARSE_VARIABLES_H
-#define PARSE_VARIABLES_H
+#ifndef VARIABLES_H
+#define VARIABLES_H
 
 #include "../tokenlib.h"
 

@@ -127,7 +127,6 @@ int test_scan_line() {
         make_token(LCURLY),
         make_token(RCURLY),
         make_token(SEMICOLON),
-        make_token(DOT),
         make_token(PLUS),
         make_token(MINUS),
         make_token(NEGATE),
@@ -139,7 +138,7 @@ int test_scan_line() {
         make_token(LT),
     };
 
-    result = scan_line(" \t ( ) {} ; . + - ~ * / ! = > < \n", 1, &list);
+    result = scan_line(" \t ( ) {} ; + - ~ * / ! = > < \n", 1, &list);
     assert(result == SCAN_LINE_SUCCESS);
     assert(match_tl(&list, expected1, sizeof(expected1) / sizeof(expected1[0])));
 
@@ -253,13 +252,11 @@ int test_scan_line() {
     reset_token_list(&list);
     Token expected10[] = {
         make_token_with_literal(NUMBER, (Literal){.Number=4}),
-        make_token(DOT),
         make_token_with_literal(NUMBER, (Literal){.Number=4.3}),
-        make_token(DOT),
         make_token_with_literal(NUMBER, (Literal){.Number=0}),
     };
 
-    result = scan_line("4 . 4.3 . 0\n", 1, &list);
+    result = scan_line("4 4.3 0\n", 1, &list);
     assert(result == SCAN_LINE_SUCCESS);
     assert(match_tl(&list, expected10, sizeof(expected10) / sizeof(expected10[0])));
 
@@ -297,12 +294,11 @@ int test_scan_line() {
         make_token_with_literal(IDENTIFIER, (Literal){.Name="ident"}),
         make_token(GT_EQ),
         make_token_with_literal(STRING, (Literal){.String="this is a string"}),
-        make_token(DOT),
         make_token(PLUS),
         make_token(LT),
     };
 
-    result = scan_line(")!= \t ! = * != # this is a comment\n 5 > = _ident or ident >= \"this is a string\" . + < \\ = <=\n", 1, &list);
+    result = scan_line(")!= \t ! = * != # this is a comment\n 5 > = _ident or ident >= \"this is a string\" + < \\ = <=\n", 1, &list);
     assert(result == SCAN_LINE_FAILURE);
     assert(match_tl(&list, expected12, sizeof(expected12) / sizeof(expected12[0])));
 

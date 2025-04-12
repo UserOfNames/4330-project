@@ -8,6 +8,7 @@ Token make_token(TokenType type) {
     Token token = {
         .type = type,
         .literal.Number = 0,
+        .line = 0,
     };
 
     return token;

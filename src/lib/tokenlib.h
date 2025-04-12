@@ -21,8 +21,6 @@ typedef enum {
 
     SEMICOLON,
 
-    DOT,
-
     PLUS, MINUS, NEGATE, STAR, SLASH,
 
     // (#) Comment
@@ -40,6 +38,9 @@ typedef enum {
     // Keywords
     IF, ELSE, WHILE, FALSE, TRUE,
     AND, OR, PRINT, NONE,
+
+    // Special token denoting the end of a token list
+    ENDPOINT,
 } TokenType;
 
 

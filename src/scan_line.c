@@ -175,10 +175,6 @@ int scan_line(char *line, int line_num, TokenList *list) {
                 token.type = SEMICOLON;
                 break;
 
-            case '.':
-                token.type = DOT;
-                break;
-
             case '+':
                 token.type = PLUS;
                 break;

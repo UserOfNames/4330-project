@@ -3,13 +3,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "lib/parse/test_assignment.h"
 #include "test_interpret_file.h"
 #include "lib/test_tokenlib.h"
 #include "test_scan_line.h"
 #include "lib/parse/test_stack.h"
 #include "lib/parse/test_queue.h"
 #include "lib/parse/test_variables.h"
-#include "lib/parse/test_parselib.h"
+#include "lib/parse/test_expressions.h"
 
 int main(int argc, char *argv[]) {
     printf("\n---------------------------------\n"
@@ -165,6 +166,12 @@ int main(int argc, char *argv[]) {
              "| parse_expression(): |"
            "\n-----------------------\n");
     test_parse_expression();
+
+
+    printf("\n-----------------------\n"
+             "| parse_assignment(): |"
+           "\n-----------------------\n");
+    test_parse_assignment();
 
 
     printf("\n---------------------\n"

@@ -100,7 +100,7 @@ int test_add_token() {
     // List should not grow until used exceeds capacity
     int i;
     for (i=0; i<14; i++) {
-        add_token(&list, make_token(DOT));
+        add_token(&list, make_token(SEMICOLON));
     }
     assert(list.capacity == 16);
     assert(list.used == 16);
@@ -120,7 +120,7 @@ int test_reset_token_list() {
     TokenList list = make_token_list();
     add_token(&list, make_token(RPAREN));
     add_token(&list, make_token(LPAREN));
-    add_token(&list, make_token(DOT));
+    add_token(&list, make_token(SEMICOLON));
     add_token(&list, make_token(STAR));
     reset_token_list(&list);
 
