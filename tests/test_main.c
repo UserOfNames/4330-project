@@ -11,6 +11,7 @@
 #include "lib/parse/test_queue.h"
 #include "lib/parse/test_variables.h"
 #include "lib/parse/test_expressions.h"
+#include "lib/parse/test_print.h"
 
 int main(int argc, char *argv[]) {
     printf("\n---------------------------------\n"
@@ -172,6 +173,11 @@ int main(int argc, char *argv[]) {
              "| parse_assignment(): |"
            "\n-----------------------\n");
     test_parse_assignment();
+
+    printf("\n------------------\n"
+             "| print_value(): |"
+           "\n------------------\n");
+    test_print_value();
 
 
     printf("\n---------------------\n"

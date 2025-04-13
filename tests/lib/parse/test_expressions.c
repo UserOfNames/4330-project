@@ -177,6 +177,7 @@ int test_parse_expression() {
     Token expr10[] = {
         make_token(NEGATE),
         make_number_token(4.0),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -190,6 +191,7 @@ int test_parse_expression() {
         make_token(NEGATE),
         make_token(NEGATE),
         make_number_token(4.0),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -206,6 +208,7 @@ int test_parse_expression() {
         make_token(NEGATE),
         make_token(NEGATE),
         make_number_token(4.0),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -218,6 +221,7 @@ int test_parse_expression() {
     Token expr13[] = {
         make_token(NEGATE),
         make_number_token(0.0),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -230,6 +234,7 @@ int test_parse_expression() {
     Token expr14[] = {
         make_token(NEGATE),
         make_number_token(-4.0),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -243,6 +248,7 @@ int test_parse_expression() {
         make_token(NEGATE),
         make_token(NEGATE),
         make_number_token(-4.0),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -255,6 +261,7 @@ int test_parse_expression() {
     Token expr16[] = {
         make_token(BANG),
         make_token(FALSE),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -267,6 +274,7 @@ int test_parse_expression() {
     Token expr17[] = {
         make_token(BANG),
         make_token(TRUE),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -280,6 +288,7 @@ int test_parse_expression() {
         make_token(BANG),
         make_token(BANG),
         make_token(TRUE),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -293,6 +302,7 @@ int test_parse_expression() {
         make_token(BANG),
         make_token(BANG),
         make_token(FALSE),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -322,6 +332,7 @@ int test_parse_expression() {
         make_token(RPAREN),
         make_token(STAR),
         make_number_token(7.0),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -367,6 +378,7 @@ int test_parse_expression() {
         make_number_token(100),
         make_token(AND),
         make_token(TRUE),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     
@@ -445,6 +457,7 @@ int test_parse_expression() {
         make_token(RPAREN),
         make_token(STAR),
         make_number_token(7.0),
+        make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
     

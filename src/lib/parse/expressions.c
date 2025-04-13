@@ -364,9 +364,19 @@ Token parse_expression(Variable **table) {
     int neg_count = 0;
 
     _Bool break_loop = false;
-    while (_IP -> type != ENDPOINT && _IP -> type != SEMICOLON && !break_loop) {
+    while (_IP -> type != SEMICOLON && !break_loop) {
         line = _IP -> line;
         switch (_IP -> type) {
+            // If the end of the token list is found before
+            // a semicolon, the expression is unterminated
+            case ENDPOINT:
+                fprintf(stderr, "Error: Unterminated expression on line %d\n"
+                        "Expressions should be terminated with a ';'\n",
+                        _IP -> line);
+                result.type = DISCARD;
+                break_loop = true;
+                break;
+
             case NUMBER:
                 enqueue(&output, *_IP);
                 _IP++;

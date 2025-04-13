@@ -23,9 +23,6 @@ typedef enum {
 
     PLUS, MINUS, NEGATE, STAR, SLASH,
 
-    // (#) Comment
-    HASH,
-
     // Logical NOT
     BANG,
 
