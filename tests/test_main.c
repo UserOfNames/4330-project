@@ -96,31 +96,31 @@ int main(int argc, char *argv[]) {
     printf("\n-----------------\n"
              "| make_stack(): |"
            "\n-----------------\n");
-    test_make_ptr_stack();
+    test_make_token_stack();
 
 
     printf("\n-------------------\n"
              "|destroy_stack(): |"
            "\n-------------------\n");
-    test_destroy_ptr_stack();
+    test_destroy_token_stack();
 
 
     printf("\n-----------\n"
              "| push(): |"
            "\n-----------\n");
-    test_push_ptr();
+    test_push_token();
 
 
     printf("\n----------\n"
              "| top(): |"
            "\n----------\n");
-    test_top_ptr();
+    test_top_token();
 
 
     printf("\n----------\n"
              "| pop(): |"
            "\n----------\n");
-    test_pop_ptr();
+    test_pop_token();
 
 
     printf("\n-----------------\n"
