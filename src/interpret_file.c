@@ -69,7 +69,7 @@ int interpret_file(char *path_str) {
     _IP = token_list.tokens;
 
     int parse_result;
-    while (!break_loop && (parse_result = initial_state(&table)) != ENDPOINT) {
+    while (!break_loop && (parse_result = initial_state(&table, false, false)) != ENDPOINT) {
         // Some type system abuse here, using enum variants alongside exit
         // codes. C's awful type system not only allows this abuse,
         // it almost forces it if you don't want to make your life miserable.

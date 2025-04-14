@@ -34,7 +34,7 @@ int parse_ifelse(Variable **table) {
         // Continue the normal execution pattern until we find the closing
         // RCURLY. Then, skip the else block (if it exists)
         case TRUE:
-            while ((result = initial_state(table)) != RCURLY) {
+            while ((result = initial_state(table, true, false)) != RCURLY) {
                 if (result == EXIT_FAILURE)
                     return result;
 
@@ -97,7 +97,7 @@ int parse_ifelse(Variable **table) {
             // Pass the '{'
             _IP++;
 
-            while ((result = initial_state(table)) != RCURLY) {
+            while ((result = initial_state(table, true, false)) != RCURLY) {
                 if (result == EXIT_FAILURE)
                     return result;
 

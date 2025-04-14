@@ -223,6 +223,31 @@ int test_parse_ifelse() {
     result = parse_ifelse(&table);
     assert(result == EXIT_FAILURE);
 
+    // Failure: Nesting
+    Token if12[] = {
+        make_token(IF),
+        make_number_token(3.0),
+        make_token(LT),
+        make_number_token(4.0),
+        make_token(SEMICOLON),
+        make_token(LCURLY),
+        make_token(PRINT),
+        make_string_token("SHOULDPRINTDESPITEERROR3"),
+        make_token(SEMICOLON),
+        make_token(IF),
+        make_token(TRUE),
+        make_token(SEMICOLON),
+        make_token(LCURLY),
+        make_token(RCURLY),
+        make_token(RCURLY),
+        make_token(ELSE),
+        make_token(LCURLY),
+        make_token(ENDPOINT),
+    };
+    _IP = if12;
+    result = parse_ifelse(&table);
+    assert(result == EXIT_FAILURE);
+
     destroy_variables(&table);
     return EXIT_SUCCESS;
 }

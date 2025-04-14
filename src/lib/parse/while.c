@@ -32,7 +32,7 @@ int parse_while(Variable **table) {
         _IP++; // Pass the LSQUARE token
 
         if (expr_result.type == TRUE) {
-            while ((result = initial_state(table)) != RSQUARE) {
+            while ((result = initial_state(table, false, true)) != RSQUARE) {
                 if (result == EXIT_FAILURE)
                     return result;
 

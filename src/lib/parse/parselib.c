@@ -24,14 +24,22 @@ int line;
 // For simplicity, all baseline tokens must be associated with some directive:
 // print, while, if, assignment, etc. Standalone expressions, literals,
 // parentheses, blocks, etc., are disallowed.
-int initial_state(Variable **table) {
+int initial_state(Variable **table, _Bool in_ifelse, _Bool in_while) {
     switch (_IP -> type) {
         // Note that IF and WHILE can recurse here
         case IF:
+            if (in_ifelse) {
+                fprintf(stderr, "Error: Cannot nest if/else blocks; detected on line %d\n", _IP -> line);
+                return EXIT_FAILURE;
+            }
             return parse_ifelse(table);
             break;
 
         case WHILE:
+            if (in_while) {
+                fprintf(stderr, "Error: Cannot nest while blocks; detected on line %d\n", _IP -> line);
+                return EXIT_FAILURE;
+            }
             return parse_while(table);
             break;
 

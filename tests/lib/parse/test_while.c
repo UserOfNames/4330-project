@@ -43,7 +43,7 @@ int test_parse_while() {
     result = parse_while(&table);
     assert(result == EXIT_FAILURE);
 
-    // Failure: No '{'
+    // Failure: No '['
     Token while3[] = {
         make_token(WHILE),
         make_number_token(3.0),
@@ -103,7 +103,7 @@ int test_parse_while() {
     assert(result == EXIT_SUCCESS);
     printf("-------------------\n");
 
-    // Failure: No }, false condition
+    // Failure: No ], false condition
     Token while6[] = {
         make_token(WHILE),
         make_number_token(3.0),
@@ -120,7 +120,7 @@ int test_parse_while() {
     result = parse_while(&table);
     assert(result == EXIT_FAILURE);
 
-    // Failure: No }, true condition
+    // Failure: No ], true condition
     Token while7[] = {
         make_token(WHILE),
         make_number_token(3.0),
@@ -134,6 +134,29 @@ int test_parse_while() {
         make_token(ENDPOINT),
     };
     _IP = while7;
+    result = parse_while(&table);
+    assert(result == EXIT_FAILURE);
+
+    // Failure: Nesting
+    Token while8[] = {
+        make_token(WHILE),
+        make_number_token(3.0),
+        make_token(LT),
+        make_number_token(4.0),
+        make_token(SEMICOLON),
+        make_token(LSQUARE),
+        make_token(PRINT),
+        make_string_token("SHOULDPRINTDESPITEERROR"),
+        make_token(SEMICOLON),
+        make_token(WHILE),
+        make_token(TRUE),
+        make_token(SEMICOLON),
+        make_token(LSQUARE),
+        make_token(RSQUARE),
+        make_token(RSQUARE),
+        make_token(ENDPOINT),
+    };
+    _IP = while8;
     result = parse_while(&table);
     assert(result == EXIT_FAILURE);
 

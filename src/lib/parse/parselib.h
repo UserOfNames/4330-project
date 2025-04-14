@@ -1,6 +1,8 @@
 #ifndef PARSELIB_H
 #define PARSELIB_H
 
+#include <stdbool.h>
+
 #include "../tokenlib.h"
 #include "assignment.h"
 #include "expressions.h"
@@ -14,6 +16,6 @@
 extern Token *_IP;
 extern int line;
 
-int initial_state(Variable **table);
+int initial_state(Variable **table, _Bool in_ifelse, _Bool in_while);
 
 #endif
