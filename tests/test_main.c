@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include "lib/parse/test_assignment.h"
+#include "lib/parse/test_ifelse.h"
 #include "test_interpret_file.h"
 #include "lib/test_tokenlib.h"
 #include "test_scan_line.h"
@@ -178,6 +179,11 @@ int main(int argc, char *argv[]) {
              "| print_value(): |"
            "\n------------------\n");
     test_print_value();
+
+    printf("\n-------------------\n"
+             "| parse_ifelse(): |"
+           "\n-------------------\n");
+    test_parse_ifelse();
 
 
     printf("\n---------------------\n"

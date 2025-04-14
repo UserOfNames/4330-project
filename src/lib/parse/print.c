@@ -7,6 +7,13 @@
 #include "variables.h"
 #include "parselib.h"
 
+// Print an error signifying the lack of a semicolon after the print statement
+void unterminated_err() {
+    fprintf(stderr, "Error: Unterminated print statment on line %d\n"
+            "Print statements should be terminated with a ';'\n",
+            _IP -> line);
+}
+
 int print_value(Variable **table) {
     // IP is currently pointing to the 'print' directive;
     // increment to the next token, then figure out how to handle it
@@ -17,6 +24,12 @@ int print_value(Variable **table) {
     switch (_IP -> type) {
         case STRING:
             printf("%s\n", _IP -> literal.String);
+            // Make sure the print statement is terminated
+            _IP++;
+            if (_IP -> type != SEMICOLON) {
+                unterminated_err();
+                return EXIT_FAILURE;
+            }
             break;
 
         case IDENTIFIER:
@@ -30,21 +43,32 @@ int print_value(Variable **table) {
             // ...then if it's none...
             if (var_result -> type == NONE) {
                 printf("None\n");
+                _IP++;
+                if (_IP -> type != SEMICOLON) {
+                    unterminated_err();
+                    return EXIT_FAILURE;
+                }
+
                 return EXIT_SUCCESS;
             }
 
             // ...then if it's a string...
             if (var_result -> type == STRING) {
                 printf("%s\n", var_result -> literal.String);
+                _IP++;
+                if (_IP -> type != SEMICOLON) {
+                    unterminated_err();
+                    return EXIT_FAILURE;
+                }
+
                 return EXIT_SUCCESS;
             }
 
             // ...then we can assume it represents an expression
             // parse_expression() will catch the other possible errors
+            // Note that expression must already terminate with a semicolon,
+            // so we don't need to check that again in this case
             result = parse_expression(table);
-            if (result.type == DISCARD) {
-                return EXIT_FAILURE;
-            }
 
             switch (result.type) {
                 case NUMBER:
@@ -70,11 +94,7 @@ int print_value(Variable **table) {
             break;
 
         case NUMBER:
-            // Check that the expression parse was successful first
             result = parse_expression(table);
-            if (result.type == DISCARD) {
-                return EXIT_FAILURE;
-            }
 
             switch (result.type) {
                 case NUMBER:
@@ -101,9 +121,6 @@ int print_value(Variable **table) {
 
         case TRUE:
             result = parse_expression(table);
-            if (result.type == DISCARD) {
-                return EXIT_FAILURE;
-            }
 
             switch (result.type) {
                 case TRUE:
@@ -126,9 +143,6 @@ int print_value(Variable **table) {
 
         case FALSE:
             result = parse_expression(table);
-            if (result.type == DISCARD) {
-                return EXIT_FAILURE;
-            }
 
             switch (result.type) {
                 case TRUE:
@@ -150,6 +164,11 @@ int print_value(Variable **table) {
             break;
 
         case NONE:
+            _IP++;
+            if (_IP -> type != SEMICOLON) {
+                unterminated_err();
+                return EXIT_FAILURE;
+            }
             printf("None\n");
             break;
 

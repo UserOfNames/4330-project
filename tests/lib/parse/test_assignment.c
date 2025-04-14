@@ -141,6 +141,19 @@ int test_parse_assignment() {
     result = get_variable(&table, "_ident9");
     assert(result == NULL);
 
+    // Unterminated
+    Token assign10[] = {
+        make_identifier_token("_ident10"),
+        make_token(EQ),
+        make_string_token("unterminated"),
+        make_token(ENDPOINT),
+    };
+    _IP = assign10;
+    expected = make_token(DISCARD);
+    assert(parse_assignment(&table) == EXIT_FAILURE);
+    result = get_variable(&table, "_ident10");
+    assert(result == NULL);
+
     destroy_variables(&table);
     return EXIT_SUCCESS;
 }

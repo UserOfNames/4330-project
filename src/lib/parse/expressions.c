@@ -349,6 +349,8 @@ Token evaluate_queue(Queue *q) {
 // When IP finds a number, that indicates an arithmetic expression.
 // When this is called, IP should be pointing to that first number.
 // This evaluates the expression using a modified shunting yard algorithm
+// Once parsing is finished, _IP will point to the semicolon that terminated
+// the expression
 Token parse_expression(Variable **table) {
     Queue output = make_queue();
     TokenStack operators = make_token_stack();

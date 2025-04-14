@@ -7,6 +7,13 @@
 #include "../tokenlib.h"
 #include "variables.h"
 
+// Print an error that the assignment should be terminated with a ';'
+void unterminated_assignment_err() {
+    fprintf(stderr, "Error: Unterminated assignment on line %d\n"
+            "Assignments should be terminated with a ';'\n",
+            _IP -> line);
+}
+
 int assign(Variable **table) {
     // Mark the name of the variable to assign to, then advance IP
     // to the token after the equals (the token to assign from)
@@ -19,10 +26,18 @@ int assign(Variable **table) {
     switch (_IP -> type) {
         case NONE:
             result = *_IP;
+            if(_IP -> type != SEMICOLON) {
+                unterminated_assignment_err();
+                return EXIT_FAILURE;
+            }
             break;
 
         case STRING:
             result = *_IP;
+            if(_IP -> type != SEMICOLON) {
+                unterminated_assignment_err();
+                return EXIT_FAILURE;
+            }
             break;
 
         case IDENTIFIER:

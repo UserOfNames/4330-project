@@ -594,6 +594,19 @@ int test_parse_expression() {
     result = parse_expression(&table);
     assert(token_eq(result, expected));
 
+    // Unterminated
+    Token expr31[] = {
+        make_number_token(3.0),
+        make_token(PLUS),
+        make_number_token(5.0),
+        make_token(ENDPOINT),
+    };
+    
+    _IP = expr31;
+    expected = make_token(DISCARD);
+    result = parse_expression(&table);
+    assert(token_eq(result, expected));
+
     destroy_variables(&table);
     return EXIT_SUCCESS;
 }

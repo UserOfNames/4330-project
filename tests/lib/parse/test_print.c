@@ -7,6 +7,7 @@
 
 int test_print_value() {
     Variable *table = NULL;
+    int result;
 
     Token print1[] = {
         make_token(PRINT),
@@ -18,7 +19,8 @@ int test_print_value() {
     // Since testing what we write to stdout directly would be kinda
     // tricky, manually compare the EXPECTED: output to the actual output
     printf("EXPECTED: True\nACTUAL: ");
-    print_value(&table);
+    result = print_value(&table);
+    assert(result == EXIT_SUCCESS);
     printf("\n");
 
     Token print2[] = {
@@ -29,7 +31,8 @@ int test_print_value() {
     };
     _IP = print2;
     printf("EXPECTED: False\nACTUAL: ");
-    print_value(&table);
+    result = print_value(&table);
+    assert(result == EXIT_SUCCESS);
     printf("\n");
 
     Token print3[] = {
@@ -40,7 +43,8 @@ int test_print_value() {
     };
     _IP = print3;
     printf("EXPECTED: None\nACTUAL: ");
-    print_value(&table);
+    result = print_value(&table);
+    assert(result == EXIT_SUCCESS);
     printf("\n");
 
     Token print4[] = {
@@ -53,7 +57,8 @@ int test_print_value() {
     };
     _IP = print4;
     printf("EXPECTED: 8.2\nACTUAL: ");
-    print_value(&table);
+    result = print_value(&table);
+    assert(result == EXIT_SUCCESS);
     printf("\n");
 
     Token print5[] = {
@@ -64,7 +69,8 @@ int test_print_value() {
     _IP = print5;
     printf("EXPECTED: Error...\nACTUAL: ");
     fflush(stdout);
-    print_value(&table);
+    result = print_value(&table);
+    assert(result == EXIT_FAILURE);
     printf("\n");
 
     Token print6[] = {
@@ -76,7 +82,8 @@ int test_print_value() {
     set_variable(&table, "_ident6", make_token(NONE));
     _IP = print6;
     printf("EXPECTED: None\nACTUAL: ");
-    print_value(&table);
+    result = print_value(&table);
+    assert(result == EXIT_SUCCESS);
     printf("\n");
 
     Token print7[] = {
@@ -90,7 +97,8 @@ int test_print_value() {
     set_variable(&table, "_ident7", make_number_token(7.0));
     _IP = print7;
     printf("EXPECTED: 8.1\nACTUAL: ");
-    print_value(&table);
+    result = print_value(&table);
+    assert(result == EXIT_SUCCESS);
     printf("\n");
 
     Token print8[] = {
@@ -102,7 +110,8 @@ int test_print_value() {
     set_variable(&table, "_ident8", make_string_token("string identifier"));
     _IP = print8;
     printf("EXPECTED: string identifier\nACTUAL: ");
-    print_value(&table);
+    result = print_value(&table);
+    assert(result == EXIT_SUCCESS);
     printf("\n");
 
     Token print9[] = {
@@ -113,8 +122,51 @@ int test_print_value() {
     };
     _IP = print9;
     printf("EXPECTED: string\nACTUAL: ");
-    print_value(&table);
+    result = print_value(&table);
+    assert(result == EXIT_SUCCESS);
     printf("\n");
+    assert(_IP -> type == SEMICOLON);
+
+    // Unterminated: literal
+    Token print10[] = {
+        make_token(PRINT),
+        make_string_token("string"),
+        make_token(ENDPOINT),
+    };
+    _IP = print10;
+    printf("EXPECTED: Error...\nACTUAL: ");
+    fflush(stdout);
+    result = print_value(&table);
+    assert(result == EXIT_FAILURE);
+    printf("\n");
+
+    // Unterminated: expression
+    Token print11[] = {
+        make_token(PRINT),
+        make_identifier_token("_ident7"),
+        make_token(PLUS),
+        make_number_token(1.1),
+        make_token(ENDPOINT),
+    };
+    _IP = print11;
+    printf("EXPECTED: Error...\nACTUAL: ");
+    fflush(stdout);
+    result = print_value(&table);
+    assert(result == EXIT_FAILURE);
+    printf("\n");
+
+    // Unterminated: nothing
+    Token print12[] = {
+        make_token(PRINT),
+        make_token(ENDPOINT),
+    };
+    _IP = print12;
+    printf("EXPECTED: Error...\nACTUAL: ");
+    fflush(stdout);
+    result = print_value(&table);
+    assert(result == EXIT_FAILURE);
+    printf("\n");
+
 
     destroy_variables(&table);
     return EXIT_SUCCESS;
