@@ -7,6 +7,7 @@
 #include "lib/tokenlib.h"
 #include "scan_line.h"
 #include "constants.h"
+#include "lib/parse/parselib.h"
 
 
 int interpret_file(char *path_str) {
@@ -55,8 +56,35 @@ int interpret_file(char *path_str) {
     // Terminate the token list
     add_token(&token_list, make_token(ENDPOINT));
 
-    reset_token_list(&token_list);
+    // Initialize the variable hashmap
+    Variable *table = NULL;
 
+    // Initialize the instruction pointer
+    _IP = token_list.tokens;
+
+    print_token_list(&token_list);
+
+    while ((result = initial_state(&table)) != ENDPOINT && !break_loop) {
+        // Some type system abuse here, using enum variants alongside exit
+        // codes. C's awful type system not only allows this abuse,
+        // it almost forces it if you don't want to make your life miserable.
+        // So here we go!
+        switch (result) {
+            case EXIT_FAILURE:
+                break_loop = true;
+                break;
+
+            // There shouldn't be a } in this state
+            case RCURLY:
+                fprintf(stderr, "Error: Unexpected '}' on line %d\n", _IP -> line);
+                break_loop = true;
+                break;
+        }
+    }
+
+    // Cleanup
+    destroy_variables(&table);
+    reset_token_list(&token_list);
     fclose(path);
     path = NULL;
 

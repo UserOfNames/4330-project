@@ -77,6 +77,7 @@ void destroy_token(Token *token);
 TokenList make_token_list();
 void reset_token_list(TokenList *list);
 int add_token(TokenList *list, Token token);
+void print_token_list(TokenList *list);
 
 Token plus_tokens(Token l, Token r);
 Token minus_tokens(Token l, Token r);

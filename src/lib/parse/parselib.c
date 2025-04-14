@@ -62,7 +62,7 @@ int initial_state(Variable **table) {
 
         // All other tokens are invalid
         default:
-            fprintf(stderr, "Error: Unexpected token on line %d\n", _IP -> line);
+            fprintf(stderr, "Error: Unexpected token %d on line %d\n", _IP -> type, _IP -> line);
             return EXIT_FAILURE;
     }
 

@@ -23,6 +23,114 @@ Token make_token_with_literal(TokenType type, Literal literal) {
     return token;
 }
 
+
+// Print out a token list for debugging purposes
+void print_token_list(TokenList *list) {
+    int i;
+    for (i=0; i<list->used; i++) {
+        switch ((list -> tokens)[i].type) {
+            case DISCARD:
+                printf("DISCARD\n");
+                break;
+            case LPAREN:
+                printf("LPAREN\n");
+                break;
+            case RPAREN:
+                printf("RPAREN\n");
+                break;
+            case LCURLY:
+                printf("LCURLY\n");
+                break;
+            case RCURLY:
+                printf("RCURLY\n");
+                break;
+            case SEMICOLON:
+                printf("SEMICOLON\n");
+                break;
+            case PLUS:
+                printf("PLUS\n");
+                break;
+            case MINUS:
+                printf("MINUS\n");
+                break;
+            case NEGATE:
+                printf("NEGATE\n");
+                break;
+            case STAR:
+                printf("STAR\n");
+                break;
+            case SLASH:
+                printf("SLASH\n");
+                break;
+            case BANG:
+                printf("BANG\n");
+                break;
+            case EQ:
+                printf("EQ\n");
+                break;
+            case NOT_EQ:
+                printf("NOT_EQ\n");
+                break;
+            case EQ_EQ:
+                printf("EQ_EQ\n");
+                break;
+            case LT:
+                printf("LT\n");
+                break;
+            case GT:
+                printf("GT\n");
+                break;
+            case LT_EQ:
+                printf("LT_EQ\n");
+                break;
+            case GT_EQ:
+                printf("GT_EQ\n");
+                break;
+            case STRING:
+                printf("STRING\n");
+                break;
+            case NUMBER:
+                printf("NUMBER\n");
+                break;
+            case IDENTIFIER:
+                printf("IDENTIFIER\n");
+                break;
+            case IF:
+                printf("IF\n");
+                break;
+            case ELSE:
+                printf("ELSE\n");
+                break;
+            case WHILE:
+                printf("WHILE\n");
+                break;
+            case FALSE:
+                printf("FALSE\n");
+                break;
+            case TRUE:
+                printf("TRUE\n");
+                break;
+            case AND:
+                printf("AND\n");
+                break;
+            case OR:
+                printf("OR\n");
+                break;
+            case PRINT:
+                printf("PRINT\n");
+                break;
+            case NONE:
+                printf("NONE\n");
+                break;
+            case ENDPOINT:
+                printf("ENDPOINT\n");
+                break;
+        }
+    }
+    printf("\n");
+}
+
+
 // Generate a numeric token
 Token make_number_token(double num) {
     return make_token_with_literal(NUMBER, (Literal){.Number=num});
