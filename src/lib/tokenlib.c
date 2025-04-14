@@ -24,108 +24,120 @@ Token make_token_with_literal(TokenType type, Literal literal) {
 }
 
 
+// Given a token, get the corresponding TokenType as a string
+char* get_token_string(Token token) {
+    switch (token.type) {
+        case DISCARD:
+            return "DISCARD";
+            break;
+        case LPAREN:
+            return "LPAREN";
+            break;
+        case RPAREN:
+            return "RPAREN";
+            break;
+        case LSQUARE:
+            return "LSQUARE";
+            break;
+        case RSQUARE:
+            return "RSQUARE";
+            break;
+        case LCURLY:
+            return "LCURLY";
+            break;
+        case RCURLY:
+            return "RCURLY";
+            break;
+        case SEMICOLON:
+            return "SEMICOLON";
+            break;
+        case PLUS:
+            return "PLUS";
+            break;
+        case MINUS:
+            return "MINUS";
+            break;
+        case NEGATE:
+            return "NEGATE";
+            break;
+        case STAR:
+            return "STAR";
+            break;
+        case SLASH:
+            return "SLASH";
+            break;
+        case BANG:
+            return "BANG";
+            break;
+        case EQ:
+            return "EQ";
+            break;
+        case NOT_EQ:
+            return "NOT_EQ";
+            break;
+        case EQ_EQ:
+            return "EQ_EQ";
+            break;
+        case LT:
+            return "LT";
+            break;
+        case GT:
+            return "GT";
+            break;
+        case LT_EQ:
+            return "LT_EQ";
+            break;
+        case GT_EQ:
+            return "GT_EQ";
+            break;
+        case STRING:
+            return "STRING";
+            break;
+        case NUMBER:
+            return "NUMBER";
+            break;
+        case IDENTIFIER:
+            return "IDENTIFIER";
+            break;
+        case IF:
+            return "IF";
+            break;
+        case ELSE:
+            return "ELSE";
+            break;
+        case WHILE:
+            return "WHILE";
+            break;
+        case FALSE:
+            return "FALSE";
+            break;
+        case TRUE:
+            return "TRUE";
+            break;
+        case AND:
+            return "AND";
+            break;
+        case OR:
+            return "OR";
+            break;
+        case PRINT:
+            return "PRINT";
+            break;
+        case NONE:
+            return "NONE";
+            break;
+        case ENDPOINT:
+            return "ENDPOINT";
+            break;
+    }
+}
+
+
 // Print out a token list for debugging purposes
 void print_token_list(TokenList *list) {
     int i;
     for (i=0; i<list->used; i++) {
-        switch ((list -> tokens)[i].type) {
-            case DISCARD:
-                printf("DISCARD\n");
-                break;
-            case LPAREN:
-                printf("LPAREN\n");
-                break;
-            case RPAREN:
-                printf("RPAREN\n");
-                break;
-            case LCURLY:
-                printf("LCURLY\n");
-                break;
-            case RCURLY:
-                printf("RCURLY\n");
-                break;
-            case SEMICOLON:
-                printf("SEMICOLON\n");
-                break;
-            case PLUS:
-                printf("PLUS\n");
-                break;
-            case MINUS:
-                printf("MINUS\n");
-                break;
-            case NEGATE:
-                printf("NEGATE\n");
-                break;
-            case STAR:
-                printf("STAR\n");
-                break;
-            case SLASH:
-                printf("SLASH\n");
-                break;
-            case BANG:
-                printf("BANG\n");
-                break;
-            case EQ:
-                printf("EQ\n");
-                break;
-            case NOT_EQ:
-                printf("NOT_EQ\n");
-                break;
-            case EQ_EQ:
-                printf("EQ_EQ\n");
-                break;
-            case LT:
-                printf("LT\n");
-                break;
-            case GT:
-                printf("GT\n");
-                break;
-            case LT_EQ:
-                printf("LT_EQ\n");
-                break;
-            case GT_EQ:
-                printf("GT_EQ\n");
-                break;
-            case STRING:
-                printf("STRING\n");
-                break;
-            case NUMBER:
-                printf("NUMBER\n");
-                break;
-            case IDENTIFIER:
-                printf("IDENTIFIER\n");
-                break;
-            case IF:
-                printf("IF\n");
-                break;
-            case ELSE:
-                printf("ELSE\n");
-                break;
-            case WHILE:
-                printf("WHILE\n");
-                break;
-            case FALSE:
-                printf("FALSE\n");
-                break;
-            case TRUE:
-                printf("TRUE\n");
-                break;
-            case AND:
-                printf("AND\n");
-                break;
-            case OR:
-                printf("OR\n");
-                break;
-            case PRINT:
-                printf("PRINT\n");
-                break;
-            case NONE:
-                printf("NONE\n");
-                break;
-            case ENDPOINT:
-                printf("ENDPOINT\n");
-                break;
-        }
+        printf("%s\n", get_token_string((list -> tokens)[i]));
     }
     printf("\n");
 }

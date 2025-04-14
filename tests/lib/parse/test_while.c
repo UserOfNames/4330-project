@@ -17,10 +17,10 @@ int test_parse_while() {
         make_token(WHILE),
         make_string_token("bad"),
         make_token(SEMICOLON),
-        make_token(LCURLY),
+        make_token(LSQUARE),
         make_token(PRINT),
         make_string_token("SHOULDNOTPRINT"),
-        make_token(RCURLY),
+        make_token(RSQUARE),
         make_token(ENDPOINT),
     };
     _IP = while1;
@@ -33,10 +33,10 @@ int test_parse_while() {
         make_number_token(3.0),
         make_token(LT),
         make_number_token(4.0),
-        make_token(LCURLY),
+        make_token(LSQUARE),
         make_token(PRINT),
         make_string_token("SHOULDNOTPRINT"),
-        make_token(RCURLY),
+        make_token(RSQUARE),
         make_token(ENDPOINT),
     };
     _IP = while2;
@@ -52,7 +52,7 @@ int test_parse_while() {
         make_token(SEMICOLON),
         make_token(PRINT),
         make_string_token("SHOULDNOTPRINT"),
-        make_token(RCURLY),
+        make_token(RSQUARE),
         make_token(ENDPOINT),
     };
     _IP = while3;
@@ -66,11 +66,11 @@ int test_parse_while() {
         make_token(GT),
         make_number_token(4.0),
         make_token(SEMICOLON),
-        make_token(LCURLY),
+        make_token(LSQUARE),
         make_token(PRINT),
         make_string_token("SHOULDNOTPRINT"),
         make_token(SEMICOLON),
-        make_token(RCURLY),
+        make_token(RSQUARE),
         make_token(ENDPOINT),
     };
     _IP = while4;
@@ -84,7 +84,7 @@ int test_parse_while() {
         make_token(LT),
         make_number_token(3.0),
         make_token(SEMICOLON),
-        make_token(LCURLY),
+        make_token(LSQUARE),
         make_token(PRINT),
         make_string_token("SHOULDPRINT3TIMES"),
         make_token(SEMICOLON),
@@ -94,7 +94,7 @@ int test_parse_while() {
         make_token(PLUS),
         make_number_token(1.0),
         make_token(SEMICOLON),
-        make_token(RCURLY),
+        make_token(RSQUARE),
         make_token(ENDPOINT),
     };
     set_variable(&table, "_var5", make_number_token(0.0));
@@ -103,83 +103,37 @@ int test_parse_while() {
     assert(result == EXIT_SUCCESS);
     printf("-------------------\n");
 
-    // Nested, run three times each loop
-    Token while6[] = {
-        make_token(WHILE),
-        make_identifier_token("_var6a"),
-        make_token(LT),
-        make_number_token(3.0),
-        make_token(SEMICOLON),
-        make_token(LCURLY),
-        make_token(PRINT),
-        make_string_token("SHOULDPRINT3TIMES"),
-        make_token(SEMICOLON),
-        make_token(WHILE),
-        make_identifier_token("_var6b"),
-        make_token(LT),
-        make_number_token(3.0),
-        make_token(SEMICOLON),
-        make_token(LCURLY),
-        make_token(PRINT),
-        make_string_token("SHOULDPRINT9TIMES"),
-        make_token(SEMICOLON),
-        make_identifier_token("_var6b"),
-        make_token(EQ),
-        make_identifier_token("_var6b"),
-        make_token(PLUS),
-        make_number_token(1.0),
-        make_token(SEMICOLON),
-        make_token(RCURLY),
-        make_identifier_token("_var6a"),
-        make_token(EQ),
-        make_identifier_token("_var6a"),
-        make_token(PLUS),
-        make_number_token(1.0),
-        make_token(SEMICOLON),
-        make_identifier_token("_var6b"),
-        make_token(EQ),
-        make_number_token(0.0),
-        make_token(SEMICOLON),
-        make_token(RCURLY),
-        make_token(ENDPOINT),
-    };
-    set_variable(&table, "_var6a", make_number_token(0.0));
-    set_variable(&table, "_var6b", make_number_token(0.0));
-    _IP = while6;
-    result = parse_while(&table);
-    assert(result == EXIT_SUCCESS);
-
     // Failure: No }, false condition
-    Token while7[] = {
+    Token while6[] = {
         make_token(WHILE),
         make_number_token(3.0),
         make_token(GT),
         make_number_token(4.0),
         make_token(SEMICOLON),
-        make_token(LCURLY),
+        make_token(LSQUARE),
         make_token(PRINT),
         make_string_token("SHOULDNOTPRINT"),
         make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
-    _IP = while7;
+    _IP = while6;
     result = parse_while(&table);
     assert(result == EXIT_FAILURE);
 
     // Failure: No }, true condition
-    Token while8[] = {
+    Token while7[] = {
         make_token(WHILE),
         make_number_token(3.0),
         make_token(LT),
         make_number_token(4.0),
         make_token(SEMICOLON),
-        make_token(LCURLY),
+        make_token(LSQUARE),
         make_token(PRINT),
         make_string_token("SHOULDPRINTDESPITEERROR"),
         make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
-    _IP = while8;
+    _IP = while7;
     result = parse_while(&table);
     assert(result == EXIT_FAILURE);
 

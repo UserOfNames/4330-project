@@ -171,6 +171,14 @@ int scan_line(char *line, int line_num, TokenList *list) {
                 token.type = RCURLY;
                 break;
 
+            case '[':
+                token.type = LSQUARE;
+                break;
+
+            case ']':
+                token.type = RSQUARE;
+                break;
+
             case ';':
                 token.type = SEMICOLON;
                 break;
@@ -229,7 +237,6 @@ int scan_line(char *line, int line_num, TokenList *list) {
                 break;
 
             case '\n':
-                // FIXME newline logic
                 break;
 
             // If the character does not match any other token:

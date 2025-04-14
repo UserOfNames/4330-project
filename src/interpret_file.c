@@ -53,8 +53,14 @@ int interpret_file(char *path_str) {
         }
     }
 
-    // Terminate the token list
-    add_token(&token_list, make_token(ENDPOINT));
+    if (token_list.used == 0) {
+        break_loop = true;
+    } else {
+        // Terminate the token list
+        Token end = make_token(ENDPOINT);
+        end.line = (token_list.tokens)[token_list.used-1].line;
+        add_token(&token_list, end);
+    }
 
     // Initialize the variable hashmap
     Variable *table = NULL;
@@ -63,7 +69,7 @@ int interpret_file(char *path_str) {
     _IP = token_list.tokens;
 
     int parse_result;
-    while ((parse_result = initial_state(&table)) != ENDPOINT && !break_loop) {
+    while (!break_loop && (parse_result = initial_state(&table)) != ENDPOINT) {
         // Some type system abuse here, using enum variants alongside exit
         // codes. C's awful type system not only allows this abuse,
         // it almost forces it if you don't want to make your life miserable.
@@ -77,6 +83,13 @@ int interpret_file(char *path_str) {
             // There shouldn't be a } in this state
             case RCURLY:
                 fprintf(stderr, "Error: Unexpected '}' on line %d\n", _IP -> line);
+                result = EXIT_FAILURE;
+                break_loop = true;
+                break;
+
+            // Nor should there be a ]
+            case RSQUARE:
+                fprintf(stderr, "Error: Unexpected ']' on line %d\n", _IP -> line);
                 result = EXIT_FAILURE;
                 break_loop = true;
                 break;

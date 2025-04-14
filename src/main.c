@@ -38,9 +38,8 @@ void parse_args(int argc, char *argv[], struct ArgResults *arg_res) {
 
 
 
-// FIXME: PLACEHOLDER NAME
 void help(char *program_name) {
-    printf("Interpreter for FIXME PLACEHOLDER, a very basic custom programming language.\n\n"
+    printf("Interpreter for a very basic custom programming language.\n\n"
            "Usage: %s <options> <path to source file>\n\n"
            "Options:\n"
            "-h: Help: Show this help text.\n"
@@ -95,7 +94,6 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Could not interpret %s\n", argv[optind]);
 
 
-    // TODO: Move this to the appropriate location
     if (arg_res.quiet) {
         fflush(stdout);
         dup2(stdout_copy, STDOUT_FILENO);

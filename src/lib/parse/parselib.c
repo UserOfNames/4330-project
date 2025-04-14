@@ -49,11 +49,15 @@ int initial_state(Variable **table) {
             return parse_assignment(table);
             break;
 
-        // Important to help WHILE and IF/ELSE blocks find where they end
+        // Important to help IF/ELSE blocks find where they end
         case RCURLY:
             // For once, enums being integers actually helps!
             // (I hate C's type system)
             return RCURLY;
+
+        // Similarly, we need to help WHILE blocks find their end
+        case RSQUARE:
+            return RSQUARE;
 
         // The end of the file should not be an error, so return it
         // for identification
@@ -62,7 +66,8 @@ int initial_state(Variable **table) {
 
         // All other tokens are invalid
         default:
-            fprintf(stderr, "Error: Unexpected token %d on line %d\n", _IP -> type, _IP -> line);
+            fprintf(stderr, "Error: Unexpected token %s on line %d\n",
+                    get_token_string(*_IP), _IP -> line);
             return EXIT_FAILURE;
     }
 

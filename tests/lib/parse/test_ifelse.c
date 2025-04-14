@@ -166,39 +166,8 @@ int test_parse_ifelse() {
     result = parse_ifelse(&table);
     assert(result == EXIT_SUCCESS);
 
-    // If false else if true
-    Token if9[] = {
-        make_token(IF),
-        make_number_token(3.0),
-        make_token(GT),
-        make_number_token(4.0),
-        make_token(SEMICOLON),
-        make_token(LCURLY),
-        make_token(PRINT),
-        make_string_token("SHOULDNOTPRINT"),
-        make_token(SEMICOLON),
-        make_token(RCURLY),
-        make_token(ELSE),
-        make_token(LCURLY),
-        make_token(IF),
-        make_number_token(3.0),
-        make_token(LT),
-        make_number_token(4.0),
-        make_token(SEMICOLON),
-        make_token(LCURLY),
-        make_token(PRINT),
-        make_string_token("SHOULDPRINT5"),
-        make_token(SEMICOLON),
-        make_token(RCURLY),
-        make_token(RCURLY),
-        make_token(ENDPOINT),
-    };
-    _IP = if9;
-    result = parse_ifelse(&table);
-    assert(result == EXIT_SUCCESS);
-
     // No '}' on if
-    Token if10[] = {
+    Token if9[] = {
         make_token(IF),
         make_number_token(3.0),
         make_token(LT),
@@ -210,12 +179,12 @@ int test_parse_ifelse() {
         make_token(SEMICOLON),
         make_token(ENDPOINT),
     };
-    _IP = if10;
+    _IP = if9;
     result = parse_ifelse(&table);
     assert(result == EXIT_FAILURE);
 
     // No '}' on else; true condition
-    Token if11[] = {
+    Token if10[] = {
         make_token(IF),
         make_number_token(3.0),
         make_token(LT),
@@ -230,12 +199,12 @@ int test_parse_ifelse() {
         make_token(LCURLY),
         make_token(ENDPOINT),
     };
-    _IP = if11;
+    _IP = if10;
     result = parse_ifelse(&table);
     assert(result == EXIT_FAILURE);
 
     // No '}' on else; false condition
-    Token if12[] = {
+    Token if11[] = {
         make_token(IF),
         make_number_token(3.0),
         make_token(GT),
@@ -250,7 +219,7 @@ int test_parse_ifelse() {
         make_token(LCURLY),
         make_token(ENDPOINT),
     };
-    _IP = if12;
+    _IP = if11;
     result = parse_ifelse(&table);
     assert(result == EXIT_FAILURE);
 

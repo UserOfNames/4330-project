@@ -23,21 +23,21 @@ int parse_while(Variable **table) {
 
         _IP++; // Pass the SEMICOLON token from the expression
 
-        if (_IP -> type != LCURLY) {
-            fprintf(stderr, "Error: Expected '{' after while condition on line %d\n",
+        if (_IP -> type != LSQUARE) {
+            fprintf(stderr, "Error: Expected '[' after while condition on line %d\n",
                     _IP -> line);
             return EXIT_FAILURE;
         }
 
-        _IP++; // Pass the LCURLY token
+        _IP++; // Pass the LSQUARE token
 
         if (expr_result.type == TRUE) {
-            while ((result = initial_state(table)) != RCURLY) {
+            while ((result = initial_state(table)) != RSQUARE) {
                 if (result == EXIT_FAILURE)
                     return result;
 
                 if (result == ENDPOINT) {
-                    fprintf(stderr, "Error: Unterminated while loop; '}' expected on line %d\n",
+                    fprintf(stderr, "Error: Unterminated while loop; ']' expected on line %d\n",
                             _IP -> line);
                     return EXIT_FAILURE;
                 }
@@ -50,15 +50,15 @@ int parse_while(Variable **table) {
 
         // Pass the block
         else if (expr_result.type == FALSE) {
-            while (_IP -> type != RCURLY) {
+            while (_IP -> type != RSQUARE) {
                 if (_IP -> type == ENDPOINT) {
-                    fprintf(stderr, "Error: Unterminated while loop; '}' expected on line %d\n",
+                    fprintf(stderr, "Error: Unterminated while loop; ']' expected on line %d\n",
                             _IP -> line);
                     return EXIT_FAILURE;
                 }
                 _IP++;
             }
-            _IP++; // Pass the final }
+            _IP++; // Pass the final ]
             break;
         }
 

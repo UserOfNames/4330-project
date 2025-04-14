@@ -19,6 +19,8 @@ typedef enum {
 
     LCURLY, RCURLY,
 
+    LSQUARE, RSQUARE,
+
     SEMICOLON,
 
     PLUS, MINUS, NEGATE, STAR, SLASH,
@@ -72,6 +74,7 @@ Token make_number_token(double num);
 Token make_string_token(char *str);
 Token make_identifier_token(char *name);
 void destroy_token(Token *token);
+char* get_token_string(Token token);
 
 // Actions on token list
 TokenList make_token_list();

@@ -7,10 +7,6 @@
 #include "../../../src/lib/parse/token_stack.h"
 #include "../../utils.h"
 
-// NOTE: Although there are two types of stack, they function
-// identically, only taking different types. So, I'm only testing
-// one type of stack (pointer stack, since that's more complex)
-
 int test_make_token_stack() {
     TokenStack s = make_token_stack();
     assert(s.stack == NULL);
@@ -66,7 +62,7 @@ int test_push_token() {
     assert(t.literal.Number == 6.5);
 
     int i;
-    // Capacity should not grow until 16 elements are push_tokened
+    // Capacity should not grow until 16 elements are pushed
     for (i=0; i<14; i++)
         push_token(&s, t2);
 
