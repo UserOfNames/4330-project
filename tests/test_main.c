@@ -13,6 +13,7 @@
 #include "lib/parse/test_variables.h"
 #include "lib/parse/test_expressions.h"
 #include "lib/parse/test_print.h"
+#include "lib/parse/test_while.h"
 
 int main(int argc, char *argv[]) {
     printf("\n---------------------------------\n"
@@ -175,15 +176,23 @@ int main(int argc, char *argv[]) {
            "\n-----------------------\n");
     test_parse_assignment();
 
+
     printf("\n------------------\n"
              "| print_value(): |"
            "\n------------------\n");
     test_print_value();
 
+
     printf("\n-------------------\n"
              "| parse_ifelse(): |"
            "\n-------------------\n");
     test_parse_ifelse();
+
+
+    printf("\n------------------\n"
+             "| parse_while(): |"
+           "\n------------------\n");
+    test_parse_while();
 
 
     printf("\n---------------------\n"

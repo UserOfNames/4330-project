@@ -18,6 +18,8 @@ int test_parse_ifelse() {
         make_string_token("bad"),
         make_token(SEMICOLON),
         make_token(LCURLY),
+        make_token(PRINT),
+        make_string_token("SHOULDNOTPRINT"),
         make_token(RCURLY),
         make_token(ENDPOINT),
     };
@@ -33,7 +35,7 @@ int test_parse_ifelse() {
         make_number_token(4.0),
         make_token(LCURLY),
         make_token(PRINT),
-        make_string_token("HERE"),
+        make_string_token("SHOULDNOTPRINT"),
         make_token(RCURLY),
         make_token(ENDPOINT),
     };
@@ -252,5 +254,6 @@ int test_parse_ifelse() {
     result = parse_ifelse(&table);
     assert(result == EXIT_FAILURE);
 
+    destroy_variables(&table);
     return EXIT_SUCCESS;
 }

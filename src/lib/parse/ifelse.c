@@ -8,12 +8,12 @@
 #include "ifelse.h"
 
 int parse_ifelse(Variable **table) {
+    int result;
+
     // _IP currently points at the 'if' token; the next token should begin a
     // boolean expression
     _IP++;
     Token expr_result = parse_expression(table);
-
-    int result;
 
     // If parse_expression gives a DISCARD token, it should have already
     // printed an error message, so we can just immediately fail here
@@ -72,8 +72,7 @@ int parse_ifelse(Variable **table) {
             break;
 
         // Skip the if block by finding the next RCURLY. If it does not exist,
-        // that's an error. If the following token is an else, execute its
-        // block.
+        // that's an error. If the following token is an else, execute its block.
         case FALSE:
             while (_IP -> type != RCURLY) {
                 if (_IP -> type == ENDPOINT) {
@@ -115,7 +114,7 @@ int parse_ifelse(Variable **table) {
 
         default:
             fprintf(stderr, "Error: 'if' statement on line %d received invalid type\n"
-                    "Conditional statements must be given boolean types or expressions\n",
+                    "Conditional statements must be given boolean values or expressions\n",
                     _IP -> line);
             return EXIT_FAILURE;
     }
