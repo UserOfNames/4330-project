@@ -240,17 +240,21 @@ int scan_line(char *line, int line_num, TokenList *list) {
                 if (isdigit(*current)) {
                     token.type = NUMBER;
                     token.literal.Number = handle_number();
+                    // Since current gets incremented again after the switch,
+                    // we should decrement it here to counteract that
                     current--;
                     break;
                 }
 
                 else if (isalpha(*current) || *current == '_') {
                     token = handle_identifier();
+                    // See above comment
+                    current--;
                     break;
                 }
                 
                 else {
-                    fprintf(stderr, "Error: Invalid token '%c' on line %d\n", *current, line_num);
+                    fprintf(stderr, "Error: Invalid character '%c' on line %d\n", *current, line_num);
                     return SCAN_LINE_FAILURE;
                 }
         }
