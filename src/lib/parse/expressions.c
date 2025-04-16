@@ -398,9 +398,16 @@ Token parse_expression(Variable **table) {
                 break;
 
             case RPAREN:
+                if (is_empty_token(&operators)) {
+                    fprintf(stderr, "Error: Mismatched parentheses in expression on line %d\n", line);
+                    result.type = DISCARD;
+                    break_loop = true;
+                    break;
+                }
+
                 while (top_token(&operators).type != LPAREN) {
                     enqueue(&output, pop_token(&operators));
-                    if (operators.used <= 0) {
+                    if (is_empty_token(&operators)) {
                         fprintf(stderr, "Error: Mismatched parentheses in expression on line %d\n", line);
                         result.type = DISCARD;
                         break_loop = true;
@@ -543,7 +550,7 @@ Token parse_expression(Variable **table) {
             // All other types are invalid for an arithmetic expression,
             // so throw an error
             default:
-                fprintf(stderr, "Error: Unexpected token in expression on line %d\n", line);
+                fprintf(stderr, "Error: Unexpected token '%s' in expression on line %d\n", get_token_string(*_IP), line);
                 result.type = DISCARD;
                 break_loop = true;
                 break;
@@ -558,7 +565,7 @@ Token parse_expression(Variable **table) {
         return result;
     }
 
-    while (operators.used > 0) {
+    while (!is_empty_token(&operators)) {
         if (top_token(&operators).type == LPAREN) {
             fprintf(stderr, "Error: Mismatched parentheses in expression on line %d\n", line);
             result.type = DISCARD;

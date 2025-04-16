@@ -87,8 +87,8 @@ int assign(Variable **table) {
 
         // Any other token should not follow an assignment
         default:
-            fprintf(stderr, "Error: Unexpected token following identifier '%s' on line %d\n",
-                    (_IP-2) -> literal.Name, _IP -> line);
+            fprintf(stderr, "Error: Attempt to assign invalid token '%s' to identifier '%s' on line %d\n",
+                    get_token_string(*_IP), (_IP-2) -> literal.Name, _IP -> line);
             return EXIT_FAILURE;
     }
 
