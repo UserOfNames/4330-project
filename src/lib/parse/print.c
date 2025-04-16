@@ -119,6 +119,32 @@ int print_value(Variable **table) {
 
             break;
 
+        case NEGATE:
+            result = parse_expression(table);
+
+            switch (result.type) {
+                case NUMBER:
+                    printf("%f\n", result.literal.Number);
+                    break;
+
+                case TRUE:
+                    printf("True\n");
+                    break;
+
+                case FALSE:
+                    printf("False\n");
+                    break;
+
+                case DISCARD:
+                    return EXIT_FAILURE;
+
+                default:
+                    fprintf(stderr, "Unknown error parsing expression on line %d\n", _IP -> line);
+                    return EXIT_FAILURE;
+            }
+
+            break;
+
         case TRUE:
             result = parse_expression(table);
 
@@ -142,6 +168,28 @@ int print_value(Variable **table) {
             break;
 
         case FALSE:
+            result = parse_expression(table);
+
+            switch (result.type) {
+                case TRUE:
+                    printf("True\n");
+                    break;
+
+                case FALSE:
+                    printf("False\n");
+                    break;
+
+                case DISCARD:
+                    return EXIT_FAILURE;
+
+                default:
+                    fprintf(stderr, "Unknown error parsing expression on line %d\n", _IP -> line);
+                    return EXIT_FAILURE;
+            }
+
+            break;
+
+        case BANG:
             result = parse_expression(table);
 
             switch (result.type) {

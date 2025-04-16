@@ -82,6 +82,7 @@ Token evaluate_queue(Queue *q) {
     TokenStack s = make_token_stack();
     Token result;
     Token c, l, r;
+    Token slash_check; // Check for division by zero
 
     _Bool break_loop = false;
     while (q -> length > 0 && !break_loop) {
@@ -176,7 +177,14 @@ Token evaluate_queue(Queue *q) {
                     break;
                 }
 
-                push_token(&s, slash_tokens(l, r));
+                slash_check = slash_tokens(l, r);
+                if (slash_check.type == DISCARD) {
+                    fprintf(stderr, "Error: Division by zero on line %d\n", _IP -> line);
+                    pe_err(&result, &break_loop);
+                    break;
+                }
+
+                push_token(&s, slash_check);
                 break;
 
             case BANG:

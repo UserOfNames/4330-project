@@ -17,6 +17,7 @@ typedef struct {
 int set_variable(Variable **table, char *key, Token value);
 Token* get_variable(Variable **table, char *key);
 void destroy_variables(Variable **table);
+void destroy_variables_after_token_list(Variable **table);
 
 
 #endif

@@ -97,7 +97,7 @@ int interpret_file(char *path_str) {
     }
 
     // Cleanup
-    destroy_variables(&table);
+    destroy_variables_after_token_list(&table);
     reset_token_list(&token_list);
     fclose(path);
     path = NULL;

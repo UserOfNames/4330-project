@@ -26,6 +26,7 @@ int assign(Variable **table) {
     switch (_IP -> type) {
         case NONE:
             result = *_IP;
+            _IP++;
             if(_IP -> type != SEMICOLON) {
                 unterminated_assignment_err();
                 return EXIT_FAILURE;
@@ -34,6 +35,7 @@ int assign(Variable **table) {
 
         case STRING:
             result = *_IP;
+            _IP++;
             if(_IP -> type != SEMICOLON) {
                 unterminated_assignment_err();
                 return EXIT_FAILURE;
@@ -53,7 +55,6 @@ int assign(Variable **table) {
             if (result.type == DISCARD) {
                 return EXIT_FAILURE;
             }
-
             break;
 
         case FALSE:

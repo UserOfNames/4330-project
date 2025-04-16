@@ -162,7 +162,10 @@ Token make_identifier_token(char *name) {
 void destroy_token(Token *token) {
     switch(token -> type) {
         case STRING:
-            free(token -> literal.String);
+            if (token -> literal.String != NULL) {
+                free(token -> literal.String);
+                token -> literal.String = NULL;
+            }
             token -> literal.Number = 0;
             token -> type = DISCARD;
             break;
@@ -277,6 +280,10 @@ Token star_tokens(Token l, Token r) {
 
 // Divide two numeric tokens
 Token slash_tokens(Token l, Token r) {
+    if (r.literal.Number == 0) {
+        return make_token (DISCARD);
+    }
+
     return make_token_with_literal (
         NUMBER,
         (Literal){.Number=l.literal.Number / r.literal.Number}

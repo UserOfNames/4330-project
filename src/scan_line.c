@@ -24,11 +24,14 @@ int line_number;
 
 // Check if the next character matches an expected character
 // Used for two-character tokens
-_Bool resolve_next(char expected, char *next) {
-    if (*next == 0)
+_Bool resolve_next(char expected, char **current) {
+    if ((*current)[1] == 0)
         return false;
 
-    return *next == expected;
+    if ((*current)[1] == expected) {
+        *current += 1;
+        return true;
+    } else return false;
 }
 
 
@@ -200,19 +203,19 @@ int scan_line(char *line, int line_num, TokenList *list) {
                 break;
 
             case '!':
-                token.type = resolve_next('=', ++current) ? NOT_EQ : BANG;
+                token.type = resolve_next('=', &current) ? NOT_EQ : BANG;
                 break;
 
             case '=':
-                token.type = resolve_next('=', ++current) ? EQ_EQ : EQ;
+                token.type = resolve_next('=', &current) ? EQ_EQ : EQ;
                 break;
 
             case '>':
-                token.type = resolve_next('=', ++current) ? GT_EQ : GT;
+                token.type = resolve_next('=', &current) ? GT_EQ : GT;
                 break;
 
             case '<':
-                token.type = resolve_next('=', ++current) ? LT_EQ : LT;
+                token.type = resolve_next('=', &current) ? LT_EQ : LT;
                 break;
 
             case '/':

@@ -43,12 +43,30 @@ void destroy_variables(Variable **table) {
 
         switch (current -> value.type) {
             case STRING:
-                free(current -> value.literal.String);
+                if (current -> value.literal.String != NULL) {
+                    free(current -> value.literal.String);
+                    current -> value.literal.String = NULL;
+                }
                 break;
             default:
                 break;
         }
 
+        free(current);
+    }
+}
+
+// When a STRING token is copied into the variable hashmap,
+// it receives a copy of the pointer to the string. To prevent
+// a double free, if you already destroyed the token list containing
+// the STRING, call this to destroy the variable map.
+void destroy_variables_after_token_list(Variable **table) {
+    Variable *current, *tmp;
+
+    HASH_ITER(hh, *table, current, tmp) {
+        HASH_DEL(*table, current);
+
+        free(current -> name);
         free(current);
     }
 }
