@@ -1,6 +1,8 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <float.h>
 
 #include "../tokenlib.h"
 #include "expressions.h"
@@ -12,6 +14,20 @@ void unterminated_err() {
     fprintf(stderr, "Error: Unterminated print statment on line %d\n"
             "Print statements should be terminated with a ';'\n",
             _IP -> line);
+}
+
+// Make the output of number printing look nice
+void print_double(double num) {
+    double int_part;
+    double frac_part = modf(num, &int_part);
+
+    // Check if the fractional part is close to zero. If so, print as an
+    // integer. If not, print as a float
+    if (fabs(frac_part) < DBL_EPSILON) {
+        printf("%.0f\n", int_part);
+    } else {
+        printf("%f\n", num);
+    }
 }
 
 int print_value(Variable **table) {
@@ -72,7 +88,7 @@ int print_value(Variable **table) {
 
             switch (result.type) {
                 case NUMBER:
-                    printf("%f\n", result.literal.Number);
+                    print_double(result.literal.Number);
                     break;
 
                 case TRUE:
@@ -98,7 +114,7 @@ int print_value(Variable **table) {
 
             switch (result.type) {
                 case NUMBER:
-                    printf("%f\n", result.literal.Number);
+                    print_double(result.literal.Number);
                     break;
 
                 case TRUE:
@@ -124,7 +140,7 @@ int print_value(Variable **table) {
 
             switch (result.type) {
                 case NUMBER:
-                    printf("%f\n", result.literal.Number);
+                    print_double(result.literal.Number);
                     break;
 
                 case TRUE:
