@@ -37,8 +37,8 @@ int parse_while(Variable **table) {
                     return result;
 
                 if (result == ENDPOINT) {
-                    fprintf(stderr, "Error: Unterminated while loop; ']' expected on line %d\n",
-                            _IP -> line);
+                    fprintf(stderr, "Error: Unterminated while loop; loop starts on line %d\n",
+                            while_ptr -> line);
                     return EXIT_FAILURE;
                 }
             }
@@ -52,8 +52,8 @@ int parse_while(Variable **table) {
         else if (expr_result.type == FALSE) {
             while (_IP -> type != RSQUARE) {
                 if (_IP -> type == ENDPOINT) {
-                    fprintf(stderr, "Error: Unterminated while loop; ']' expected on line %d\n",
-                            _IP -> line);
+                    fprintf(stderr, "Error: Unterminated while loop; loop starts on line %d\n",
+                            while_ptr -> line);
                     return EXIT_FAILURE;
                 }
                 _IP++;
