@@ -36,11 +36,11 @@ while var1 < 3; [
 ```
 **Output:**
 ```plaintext
-0.000000
+0
 var1 is now zero
-1.000000
+1
 var1 is not zero
-2.000000
+2
 var1 is not zero
 ```
 
