@@ -53,7 +53,8 @@ int interpret_file(char *path_str) {
         }
     }
 
-    if (token_list.used == 0) {
+    // If tokenization failed or produced no tokens, skip parsing
+    if (token_list.used == 0 || result != EXIT_SUCCESS) {
         break_loop = true;
     } else {
         // Terminate the token list
